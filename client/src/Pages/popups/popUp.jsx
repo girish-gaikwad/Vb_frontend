@@ -496,12 +496,7 @@ const ListItemT = React.memo(
     minDate,
     errors,
   }) => {
-
-
-
-    const [tripTypeState, setTripType] = useState(
-      tripType?.toLowerCase()   
-    ); // Default to "both" if tripType is undefined
+    const [tripTypeState, setTripType] = useState(tripType?.toLowerCase()); // Default to "both" if tripType is undefined
 
     const handleTripTypeChange = (event, newTripType) => {
       if (newTripType !== null) {
@@ -1611,7 +1606,6 @@ const AccomodationPopup = ({
     return isValid;
   };
 
-
   const areAllGuestsAssigned = () => {
     const allGuests = cards.map((card) => card.id); // Assuming each card has a unique 'id'
 
@@ -2087,21 +2081,16 @@ const TransportPopup = ({
   };
   const [errors, setErrors] = useState({});
 
-
-  
   const validateFields = () => {
     let validationErrors = [];
     let isValid = true;
-    
-
-
 
     cards.forEach((card, index) => {
       let cardErrors = {};
-    
+
       // Always validate vehicle_type
       if (!card.vehicle_type) cardErrors.vehicle_type = "required";
-    
+
       // Validate based on travel_type
       if (card.travel_type === "both") {
         console.log("lol");
@@ -2111,32 +2100,22 @@ const TransportPopup = ({
         if (!card.to_place) cardErrors.to_place = "required";
         if (!card.r_from_plcae) cardErrors.r_from_plcae = "required";
         if (!card.r_to_plcae) cardErrors.r_to_plcae = "required";
-
-      
       } else if (card.travel_type === "onward") {
-        
         if (!card.t_arrival_at) cardErrors.t_arrival_at = "required";
-       if (!card.from_place) cardErrors.from_place = "required";
+        if (!card.from_place) cardErrors.from_place = "required";
         if (!card.to_place) cardErrors.to_place = "required";
-      } 
-      else if (card.travel_type === "return") {
-        
+      } else if (card.travel_type === "return") {
         if (!card.t_depature_at) cardErrors.t_depature_at = "required";
         if (!card.r_from_plcae) cardErrors.r_from_plcae = "required";
         if (!card.r_to_plcae) cardErrors.r_to_plcae = "required";
       }
-    
+
       if (Object.keys(cardErrors).length > 0) {
         isValid = false;
       }
-    
+
       validationErrors[index + 1] = cardErrors;
     });
-    
-
-
-
-
 
     setErrors(validationErrors);
     return isValid;
@@ -2145,14 +2124,18 @@ const TransportPopup = ({
   const handleSubmit = () => {
     // Check if all guests are present in either Tgroups or TaloneGuests
     const allGuests = [...Tgroups.flat(), ...TaloneGuests];
-    const allGuestIds = cards.map(card => card.id);
-    const allGuestsPresent = allGuestIds.every(guestId => allGuests.includes(guestId));
-  
+    const allGuestIds = cards.map((card) => card.id);
+    const allGuestsPresent = allGuestIds.every((guestId) =>
+      allGuests.includes(guestId)
+    );
+
     if (!allGuestsPresent) {
-      toast.error("Not all guests are accounted for. Please ensure all guests are in a group or alone.");
+      toast.error(
+        "Not all guests are accounted for. Please ensure all guests are in a group or alone."
+      );
       return; // Prevent closing the popup
     }
-  
+
     if (validateFields()) {
       onSave();
       onClose();
@@ -2160,10 +2143,6 @@ const TransportPopup = ({
       toast.error("Validation failed. Please fill out all required fields.");
     }
   };
-  
-
-
-
 
   const [minDate, setMinDate] = useState("");
   useEffect(() => {
@@ -2185,7 +2164,7 @@ const TransportPopup = ({
           <ArrowBack />
         </IconButton> */}
 
-<ToastContainer />
+          <ToastContainer />
 
           <div
             onClick={handlePrev}
@@ -2441,7 +2420,6 @@ const TransportPopup = ({
                     handleClose={onClose}
                     onInputChange={onInputChange}
                     errors={errors[item.id] || {}} // Pass the errors for this specific item
-
                   />
                 </Box>
               ))}
@@ -2892,6 +2870,7 @@ const VenueRequirementPopup = ({
                               }
                               fullWidth
                               margin="dense"
+                              inputProps={{ min: 1, max: 10 }} // Set min and max range here
                             />
                           </div>
                         );

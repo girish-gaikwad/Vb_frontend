@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import "./flowChart.css";
 import axios from "axios";
-import Event from "../../Assets/Event.png";
-import Guest from "../../Assets/Guest.png";
-import Participants from "../../Assets/Participants.png";
-import Venue from "../../Assets/Venue.png";
-import Transport from "../../Assets/Transport.png";
-import Accomodation from "../../Assets/Accomodation.png";
-import Food from "../../Assets/Food.png";
-import VenueRequirements from "../../Assets/Venue Requirements.png";
+import Event from "../../assets/Event.png";
+import Guest from "../../assets/Guest.png";
+import Participants from "../../assets/Participants.png";
+import Venue from "../../assets/Venue.png";
+import Transport from "../../assets/Transport.png";
+import Accomodation from "../../assets/Accomodation.png";
+import Food from "../../assets/Food.png";
+import VenueRequirements from "../../assets/Venue Requirements.png";
 import { CircularProgress } from "@mui/material";
 import myGif from "/bin-file.gif";
 import {
@@ -79,8 +79,7 @@ const TreeStructure = () => {
   const [colorMap, setColorMap] = useState({});
   const [progressMap, setProgressMap] = useState({ Invitees: 0 });
   const [completedItems, setCompletedItems] = useState([]);
-
-  console.log("here is colormap", colorMap);
+  const navigate = useNavigate();
   const [changeborder, setborder] = useState({});
 
   const [formData, setFormData] = useState({
@@ -90,8 +89,10 @@ const TreeStructure = () => {
     end_at: "",
     event_type: "",
     assigned_to: "",
+    event_status:1,
   });
   const [inviteesData, setinviteesData] = useState({});
+
   const [cards, setCards] = useState([
     {
       id: 1,
@@ -117,13 +118,9 @@ const TreeStructure = () => {
       to_place: "",
       r_from_plcae: "",
       r_to_plcae: "",
-            
+      guest_status:1,
     },
   ]);
-
-
-  console.log("girish",cards);
-  
 
   const [participantsData, setParticipantsData] = useState({
     event_id: "",
@@ -138,12 +135,11 @@ const TreeStructure = () => {
     acc_girls_count: 0,
     acc_male_faculty_count: 0,
     acc_female_faculty_count: 0,
+    participants_status:1,
   });
 
   const [groups, setGroups] = useState([]);
   const [aloneGuests, setAloneGuests] = useState([]);
-
-  console.log(aloneGuests);
 
   const [lastAction, setLastAction] = useState(null);
   const [selectedGuest, setSelectedGuest] = useState(null);
@@ -154,9 +150,10 @@ const TreeStructure = () => {
   const [VenueData, setVenueData] = useState({
     event_id: "",
     venue_type: "",
-    venue_name: [],
+    venue_name: "",
     venue_count: 0,
     capacity: 0,
+    venue_register_status:1,
   });
   const [selectedContent, setSelectedContent] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -181,35 +178,47 @@ const TreeStructure = () => {
     scribbling_pad_count: 0,
     water_bottle_count: 0,
     others: 0,
+    venue_requirement_status:1,
   });
 
   const [Tgroups, TsetGroups] = useState([]);
   const [TaloneGuests, TsetAloneGuests] = useState([]);
 
+  const transportmergearray = [...Tgroups, ...TaloneGuests];
+
   const [soupData, setSoupData] = useState({
-    food: "",
+    event_id: "",
+    preferred_food: "",
     time: "",
-    venue: "",
-    quantity: 0,
+    food_quantity: 0,
+    to_venue: "",
+    food_request_status:1,
   });
   const [carData, setCarData] = useState({
-    quantity: 0,
-    vehicleType: "",
-    arrival: "",
-    departure: "",
+    event_id: "",
+    car_count: 0,
+    arrival_at: "",
+    depature_at: "",
+    car_type: "",
+    car_request_status:1,
   });
   const [fastfoodData, setFastfoodData] = useState({
-    refreshment: "",
+    event_id: "",
+    refreshment_dish: "",
     time: "",
-    venue: "",
+    to_venue: "",
     quantity: 0,
+    refreshment_request_status:1,
   });
 
   const confirm = async () => {
     try {
-      /** Step 1: Format Start and End Dates **/
-      const formattedStartDate = `${formData.start_at.replace("T", " ")}:00`;
-      const formattedEndDate = `${formData.end_at.replace("T", " ")}:00`;
+      const formattedStartDate = formData.start_at
+        ? formData.start_at.replace("T", " ").split(".")[0]
+        : null;
+      const formattedEndDate = formData.end_at
+        ? formData.end_at.replace("T", " ").split(".")[0]
+        : null;
 
       const formattedFormData = {
         ...formData,
@@ -217,9 +226,6 @@ const TreeStructure = () => {
         end_at: formattedEndDate,
       };
 
-      // console.log("Formatted Event Data:", formattedFormData);
-
-      /** Step 2: Create Event and Obtain event_id **/
       const eventResponse = await axios.post(
         "http://localhost:8000/post/eventform",
         formattedFormData
@@ -227,7 +233,6 @@ const TreeStructure = () => {
       const event_id = eventResponse.data.event_id;
       // console.log("Created Event with ID:", event_id);
 
-      /** Step 3: Create Invitees with event_id **/
       const initialInviteesData = {
         event_id,
         guest_count: 0, // Initialize with 0; will update after guests are added
@@ -240,7 +245,6 @@ const TreeStructure = () => {
       const invitees_id = inviteesResponse.data.invitees_id;
       // console.log("Created Invitees with ID:", invitees_id);
 
-      /** Step 4: Prepare and Create Guests **/
       const updatedGuests = cards.map((card) => ({
         ...card,
         event_id,
@@ -262,7 +266,9 @@ const TreeStructure = () => {
       // console.log(guestIdsArray.join(", "));
 
       const formatDateTime = (isoString) => {
-        return `${isoString.replace("T", " ").split(".")[0]}:00`;
+        return isoString
+          ? `${isoString.replace("T", " ").split(".")[0]}`
+          : null;
       };
 
       // Create a new array for combineaccommodation data
@@ -284,6 +290,7 @@ const TreeStructure = () => {
               arrival_at: formatDateTime(cards[firstGuestIndex].arrival_at), // Formatting arrival_at
               departure_at: formatDateTime(cards[firstGuestIndex].departure_at), // Formatting departure_at
               accommodation_venue: cards[firstGuestIndex].accommodation_venue, // Adding accommodation_venue
+              combine_accommodation_status:1,
             },
             {
               event_id: "",
@@ -295,6 +302,7 @@ const TreeStructure = () => {
                 cards[secondGuestIndex].departure_at
               ), // Formatting departure_at
               accommodation_venue: cards[secondGuestIndex].accommodation_venue, // Adding accommodation_venue
+              combine_accommodation_status:1,
             }
           );
         } else {
@@ -308,6 +316,7 @@ const TreeStructure = () => {
             arrival_at: formatDateTime(cards[guestIndex].arrival_at), // Formatting arrival_at
             departure_at: formatDateTime(cards[guestIndex].departure_at), // Formatting departure_at
             accommodation_venue: cards[guestIndex].accommodation_venue, // Adding accommodation_venue
+            combine_accommodation_status:1,
           });
         }
       });
@@ -332,24 +341,174 @@ const TreeStructure = () => {
         .sort((a, b) => a - b);
 
       // console.log(CombineAccommodationIdArray);
+      const CombineTransportData = [];
+
+      transportmergearray.forEach((preference, index) => {
+        if (Array.isArray(preference)) {
+          if (preference.length === 3) {
+            // Three-member pairing logic
+            const [firstGuestIndex, secondGuestIndex, thirdGuestIndex] =
+              preference.map((p) => p - 1);
+
+            CombineTransportData.push(
+              {
+                event_id: "",
+                guest_id: guestIdsArray[firstGuestIndex],
+                is_alone: false,
+                pair_with1: guestIdsArray[secondGuestIndex],
+                pair_with2: guestIdsArray[thirdGuestIndex],
+                travel_type: cards[firstGuestIndex].travel_type,
+                vehicle_type: cards[firstGuestIndex].vehicle_type,
+                t_arrival_at: formatDateTime(
+                  cards[firstGuestIndex].t_arrival_at
+                ),
+                t_departure_at: formatDateTime(
+                  cards[firstGuestIndex].t_depature_at
+                ),
+                from_place: cards[firstGuestIndex].from_place,
+                to_place: cards[firstGuestIndex].to_place,
+                r_from_place: cards[firstGuestIndex].r_from_plcae,
+                r_to_place: cards[firstGuestIndex].r_to_plcae,
+                combine_transport_status:1,
+              },
+              {
+                event_id: "",
+                guest_id: guestIdsArray[secondGuestIndex],
+                is_alone: false,
+                pair_with1: guestIdsArray[firstGuestIndex],
+                pair_with2: guestIdsArray[thirdGuestIndex],
+                travel_type: cards[secondGuestIndex].travel_type,
+                vehicle_type: cards[secondGuestIndex].vehicle_type,
+                t_arrival_at: formatDateTime(
+                  cards[secondGuestIndex].t_arrival_at
+                ),
+                t_departure_at: formatDateTime(
+                  cards[secondGuestIndex].t_depature_at
+                ),
+                from_place: cards[secondGuestIndex].from_place,
+                to_place: cards[secondGuestIndex].to_place,
+                r_from_place: cards[secondGuestIndex].r_from_plcae,
+                r_to_place: cards[secondGuestIndex].r_to_plcae,
+                combine_transport_status:1,
+              },
+              {
+                event_id: "",
+                guest_id: guestIdsArray[thirdGuestIndex],
+                is_alone: false,
+                pair_with1: guestIdsArray[firstGuestIndex],
+                pair_with2: guestIdsArray[secondGuestIndex],
+                travel_type: cards[thirdGuestIndex].travel_type,
+                vehicle_type: cards[thirdGuestIndex].vehicle_type,
+                t_arrival_at: formatDateTime(
+                  cards[thirdGuestIndex].t_arrival_at
+                ),
+                t_departure_at: formatDateTime(
+                  cards[thirdGuestIndex].t_depature_at
+                ),
+                from_place: cards[thirdGuestIndex].from_place,
+                to_place: cards[thirdGuestIndex].to_place,
+                r_from_place: cards[thirdGuestIndex].r_from_plcae,
+                r_to_place: cards[thirdGuestIndex].r_to_plcae,
+                combine_transport_status:1,
+              }
+            );
+          } else if (preference.length === 2) {
+            // Two-member pairing logic
+            const [firstGuestIndex, secondGuestIndex] = preference.map(
+              (p) => p - 1
+            );
+
+            CombineTransportData.push(
+              {
+                event_id: "",
+                guest_id: guestIdsArray[firstGuestIndex],
+                is_alone: false,
+                pair_with1: guestIdsArray[secondGuestIndex],
+                pair_with2: null,
+                travel_type: cards[firstGuestIndex].travel_type,
+                vehicle_type: cards[firstGuestIndex].vehicle_type,
+                t_arrival_at: formatDateTime(
+                  cards[firstGuestIndex].t_arrival_at
+                ),
+                t_departure_at: formatDateTime(
+                  cards[firstGuestIndex].t_depature_at
+                ),
+                from_place: cards[firstGuestIndex].from_place,
+                to_place: cards[firstGuestIndex].to_place,
+                r_from_place: cards[firstGuestIndex].r_from_plcae,
+                r_to_place: cards[firstGuestIndex].r_to_plcae,
+                combine_transport_status:1,
+              },
+              {
+                event_id: "",
+                guest_id: guestIdsArray[secondGuestIndex],
+                is_alone: false,
+                pair_with1: guestIdsArray[firstGuestIndex],
+                pair_with2: null,
+                travel_type: cards[secondGuestIndex].travel_type,
+                vehicle_type: cards[secondGuestIndex].vehicle_type,
+                t_arrival_at: formatDateTime(
+                  cards[secondGuestIndex].t_arrival_at
+                ),
+                t_departure_at: formatDateTime(
+                  cards[secondGuestIndex].t_depature_at
+                ),
+                from_place: cards[secondGuestIndex].from_place,
+                to_place: cards[secondGuestIndex].to_place,
+                r_from_place: cards[secondGuestIndex].r_from_plcae,
+                r_to_place: cards[secondGuestIndex].r_to_plcae,
+                combine_transport_status:1,
+              }
+            );
+          }
+        } else {
+          // Alone logic
+          const guestIndex = preference - 1;
+          CombineTransportData.push({
+            event_id: "",
+            guest_id: guestIdsArray[guestIndex],
+            is_alone: true,
+            pair_with1: null,
+            pair_with2: null,
+            travel_type: cards[guestIndex].travel_type,
+            vehicle_type: cards[guestIndex].vehicle_type,
+            t_arrival_at: formatDateTime(cards[guestIndex].t_arrival_at),
+            t_departure_at: formatDateTime(cards[guestIndex].t_depature_at),
+            from_place: cards[guestIndex].from_place,
+            to_place: cards[guestIndex].to_place,
+            r_from_place: cards[guestIndex].r_from_plcae,
+            r_to_place: cards[guestIndex].r_to_plcae,
+            combine_transport_status:1,
+          });
+        }
+      });
+
+      const updatedCombineTransportData = CombineTransportData.map((data) => ({
+        ...data,
+        event_id: event_id,
+      }));
+      // console.log("transport Data:", updatedCombineTransportData);
+
+      const CombineTransportResponse = await axios.post(
+        "http://localhost:8000/post/combinetransport",
+        updatedCombineTransportData
+      );
 
       const guest_count = guestIdsArray.length;
       // console.log("Total Guests Count:", guest_count);
 
-      /** Step 5: Update Invitees with guest_count **/
       const updatedInviteesData = {
         event_id,
         guest_count,
       };
 
       await axios.put(
-        "http://localhost:8000/put/invitees",
+        "http://localhost:8000/put/update-guest-count",
         updatedInviteesData
       );
 
       // console.log("Updated Invitees with Guest Count:", guest_count);
 
-      /** Step 6: Prepare and Create Participants **/
       const updatedParticipants = {
         ...participantsData,
         event_id,
@@ -363,7 +522,6 @@ const TreeStructure = () => {
       const participants_id = participantsResponse.data.Participant_id;
       // console.log("Created Participants with ID:", participants_id);
 
-      /** Step 7: Prepare and Create Venue Booking **/
       const updatedVenue = {
         ...VenueData,
         event_id,
@@ -390,22 +548,51 @@ const TreeStructure = () => {
         venueRequirementResponse.data.VenueRequirement_id;
       // console.log("Created Venue Booking with ID:", VenueRequirement_id);
 
-      /** Final Step: Success Alert **/
-      alert(
-        `Data saved successfully!
-        Event ID: ${event_id}
-        Invitees ID: ${invitees_id}
-        Guest IDs: ${guestIdsArray.join(", ")}
-        Participants ID: ${participants_id}
-        Venue Booking ID: ${venue_id}
-        VenueRequirement ID: ${VenueRequirement_id}
-        combineaccommodation created with id :${CombineAccommodationIdArray.join(
-          ", "
-        )}`
+      const updatedsoupData = {
+        ...soupData,
+        time: formatDateTime(soupData.time),
+        event_id,
+      };
+
+      const soupDataResponse = await axios.post(
+        "http://localhost:8000/post/foodrequest",
+        updatedsoupData
       );
+      const soupData_id = soupDataResponse.data.food_request_id;
+      // console.log("Created Food Request with ID:", soupData_id);
 
+      const updatedcarData = {
+        ...carData,
+        arrival_at: formatDateTime(carData.arrival_at),
+        depature_at: formatDateTime(carData.depature_at),
+        event_id,
+      };
 
+      const carDataResponse = await axios.post(
+        "http://localhost:8000/post/car-request",
+        updatedcarData
+      );
+      const carData_id = carDataResponse.data.car_request_id;
+      // console.log("Created Car Request with ID:", carData_id);
 
+      const updatedRefreshmentData = {
+        ...fastfoodData,
+        time: formatDateTime(fastfoodData.time),
+        event_id,
+      };
+
+      const RefreshmentDataResponse = await axios.post(
+        "http://localhost:8000/post/refreshmentrequest",
+        updatedRefreshmentData
+      );
+      const RefreshmentData_id =
+        RefreshmentDataResponse.data.refreshment_request_id;
+      // console.log("Created Refreshment Request with ID:", RefreshmentData_id);
+
+      /** Final Step: Success Alert **/
+      alert(`Event Created Successfully!`);
+
+      navigate("/");
     } catch (error) {
       console.error("Error in confirm function:", error.message);
       alert(
@@ -536,19 +723,18 @@ const TreeStructure = () => {
   };
 
   const [showPopup, setShowPopup] = useState(false);
-  const navigate = useNavigate();
 
   const handleGoBackClick = () => {
     setShowPopup(true);
   };
 
-  const handleConfirm = () => {
+  const handleGoBackConfirm = () => {
     // User confirmed, erase data and navigate to home page
     // Perform any data erasure or cleanup here if needed
     navigate("/");
   };
 
-  const handleCancel = () => {
+  const handleGoBackCancel = () => {
     // User canceled, just close the popup
     setShowPopup(false);
   };
@@ -669,7 +855,7 @@ const TreeStructure = () => {
                     color: "white",
                     cursor: "pointer", // Add cursor pointer for better UX
                   }}
-                  onClick={handleConfirm}
+                  onClick={handleGoBackConfirm}
                 >
                   OK
                 </div>
@@ -682,7 +868,7 @@ const TreeStructure = () => {
                     marginRight: "8px",
                     color: "white",
                   }}
-                  onClick={handleCancel}
+                  onClick={handleGoBackCancel}
                 >
                   Cancel
                 </div>
@@ -701,7 +887,7 @@ const TreeStructure = () => {
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                 zIndex: 999,
               }}
-              onClick={handleCancel}
+              onClick={handleGoBackCancel}
             />
           )}
         </div>
@@ -825,6 +1011,3 @@ const treeRendering = (
 };
 
 export default TreeStructure;
-
-// value={item.vehicle_type} // Set the current value
-// onChange={(e) => onInputChange(item.id, "vehicle_type", e.target.value)}

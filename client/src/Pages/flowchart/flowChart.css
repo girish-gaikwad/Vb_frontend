@@ -144,7 +144,7 @@
   color: #fa6666 !important;
 }
 .grayProgress .MuiCircularProgress-circle {
-  color: #b4b4b4 !important;
+  color: #ededed !important;
 }
 @media (max-width: 1250px) {
   .tree ul {
@@ -157,5 +157,5 @@
 .relative {
   position: absolute;
   top: 15%;
-  right: 3%;
+  right: 2%;
 }

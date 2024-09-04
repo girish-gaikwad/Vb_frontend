@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./eventdetails.css";
 import axios from "axios";
-import Event from "../../Assets/Event.png";
-import Guest from "../../Assets/Guest.png";
-import Participants from "../../Assets/Participants.png";
-import Venue from "../../Assets/Venue.png";
-import Transport from "../../Assets/Transport.png";
-import Accomodation from "../../Assets/Accomodation.png";
-import Food from "../../Assets/Food.png";
-import VenueRequirements from "../../Assets/Venue Requirements.png";
+import Event from "../../assets/Event.png";
+import Guest from "../../assets/Guest.png";
+import Participants from "../../assets/Participants.png";
+import Venue from "../../assets/Venue.png";
+import Transport from "../../assets/Transport.png";
+import Accomodation from "../../assets/Accomodation.png";
+import Food from "../../assets/Food.png";
+import VenueRequirements from "../../assets/Venue Requirements.png";
 import {
   Box,
   Button,
@@ -26,6 +26,7 @@ import AssignButton from "./assignbutton";
 import { ContactPageSharp } from "@mui/icons-material";
 import { Fa500Px } from "react-icons/fa";
 import Popup from "./popup";
+import { background } from "@chakra-ui/react";
 
 const treeData = [
   {
@@ -118,6 +119,148 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       });
   }, [event_id]);
 
+  //update functions
+  const handleEventAssign = async () => {
+    try {
+      const EventAssignResponse = await axios.put(
+        "http://localhost:8000/put/admin-event-assign",
+        {
+          status: 2,
+          event_id,
+        }
+      );
+      if (EventAssignResponse.status === 200) {
+        alert("Event Assign Status updated successfully");
+      }
+    } catch (error) {
+      console.error("Error in handleEventAssign function:", error.message);
+      alert(
+        "An error occurred while saving data. Please check the console for details."
+      );
+    }
+
+  }
+  const handleGuestAssign = async () => {
+    try {
+      const GuestAssignResponse = await axios.put(
+        "http://localhost:8000/put/admin-guest-assign",
+        {
+          status: 2,
+          event_id,
+        }
+      );
+      if (GuestAssignResponse.status === 200) {
+        alert("Guest Assign Status updated successfully");
+      }
+    }catch (error) {
+      console.error("Error in handleGuestAssign function:", error.message);
+      alert(
+        "An error occurred while saving data. Please check the console for details."
+      );
+    }
+
+  }
+  const handleGuestAccomodationAssign = async () => {
+    try {
+      const GuestAccomodationAssignResponse = await axios.put(
+        "http://localhost:8000/put/admin-guest-accommodation-assign",
+        {
+          status: 2,
+          event_id,
+        }
+      );
+      if (GuestAccomodationAssignResponse.status === 200) {
+        alert("Guest Accomodation Assign Status updated successfully");
+      }
+    }catch (error) {
+      console.error("Error in handleGuestAccomodationAssign function:", error.message);
+      alert(
+        "An error occurred while saving data. Please check the console for details."
+      );
+    }
+
+  }
+  const handleGuestTransportAssign = async () => {
+    try {
+      const GuestTransportAssignResponse = await axios.put(
+        "http://localhost:8000/put/admin-guest-transport-assign",
+        {
+          status: 2,
+          event_id,
+        }
+      );
+      if (GuestTransportAssignResponse.status === 200) {
+        alert("Guest Transport Assign Status updated successfully");
+      }
+    }catch (error) {
+      console.error("Error in handleGuestTransportAssign function:", error.message);
+      alert(
+        "An error occurred while saving data. Please check the console for details."
+      );
+    }
+    
+  }
+  const handleParticipantsAssign = async () => {
+    try {
+      const ParticipantsAssignResponse = await axios.put(
+        "http://localhost:8000/put/admin-participants-assign",
+        {
+          status: 2,
+          event_id,
+        }
+      );
+      if (ParticipantsAssignResponse.status === 200) {
+        alert("Participants Assign Status updated successfully");
+      }
+    }catch (error) {
+      console.error("Error in handleParticipantsAssign function:", error.message);
+      alert(
+        "An error occurred while saving data. Please check the console for details."
+      );
+    }
+
+  }
+  const handleVenueAssign = async () => {
+    try {
+      const VenueAssignResponse = await axios.put(
+        "http://localhost:8000/put/admin-venue-assign",
+        {
+          status: 2,
+          event_id,
+        }
+      );
+      if (VenueAssignResponse.status === 200) {
+        alert("Venue Assign Status updated successfully");
+      }
+    }catch (error) {
+      console.error("Error in handleVenueAssign function:", error.message);
+      alert(
+        "An error occurred while saving data. Please check the console for details."
+      );
+    }
+
+  }
+  const handleVenueRequirementsAssign = async () => {
+    try {
+      const VenueRequirementsAssignResponse = await axios.put(
+        "http://localhost:8000/put/admin-venue-requirement-assign",
+        {
+          status: 2,
+          event_id,
+        }
+      );
+      if (VenueRequirementsAssignResponse.status === 200) {
+        alert("Venue Requirements Assign Status updated successfully");
+      }
+    }catch (error) {
+      console.error("Error in handleVenueRequirementsAssign function:", error.message);
+      alert(
+        "An error occurred while saving data. Please check the console for details."
+      );
+    }
+
+  }
+
   useEffect(() => {
     const getStatusColor = (status) => {
       switch (status) {
@@ -156,18 +299,16 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
     return <p>Loading event details...</p>; // Show a loading message if the event data is not yet fetched
   }
 
-
-  if(user==="user"){
-
+  if (user === "user") {
     if (!selectedEvent) {
-        return (
-            <>
-              {" "}
-              <p>No event selected.</p> <Link to={"/"}>back to main page</Link>{" "}
-            </>
-          );
-        }
-      }
+      return (
+        <>
+          {" "}
+          <p>No event selected.</p> <Link to={"/"}>back to main page</Link>{" "}
+        </>
+      );
+    }
+  }
 
   const [requestclick, setrequestclick] = useState(false);
   const [repopup, setrepopup] = useState(false);
@@ -265,7 +406,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
     setSelectedItem(item);
     setDisabledItems((prev) => new Set(prev).add(item)); // Disable the clicked button
   };
-  console.log(disabledItems);
+  // console.log(disabledItems);
 
   const closePopup = () => {
     setrepopup(false);
@@ -280,6 +421,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              background:"#fff",
               width: "80%",
             }}
           >
@@ -334,13 +476,8 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "10px",
               }}
             >
-              {user === "eventmanager" && (
-                <AssignButton
-                  key={item.id}
-                  adminasign={adminasign}
-                  item={item.id}
-                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
-                />
+              {user === "eventmanger" && (
+                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleEventAssign}>Assign</button>
               )}
             </div>
           </div>
@@ -356,6 +493,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               flexDirection: "column",
               justifyContent: "center",
               alignContent: "space-between",
+              background:"#fff",
               width: "100%",
             }}
           >
@@ -424,13 +562,8 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             <div
               style={{ display: "flex", justifyContent: "end", margin: "10px" }}
             >
-              {user === "eventmanager" && (
-                <AssignButton
-                  key={item.id}
-                  adminasign={adminasign}
-                  item={item.id}
-                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
-                />
+              {user === "eventmanger" && (
+                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleGuestAssign}>Assign</button>
               )}
             </div>
           </div>
@@ -445,6 +578,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
+              background:"#fff",
             }}
           >
             <h3
@@ -510,13 +644,8 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "10px",
               }}
             >
-              {user === "eventmanager" && (
-                <AssignButton
-                  key={item.id}
-                  adminasign={adminasign}
-                  item={item.id}
-                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
-                />
+              {user === "eventmanger" && (
+                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleGuestAccomodationAssign}>Assign</button>
               )}
             </div>
           </div>
@@ -531,6 +660,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
+              background:"#fff",
             }}
           >
             <h3
@@ -556,9 +686,9 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                   <img
                     src={
                       transport.transport_is_alone === 0
-                        ? "/images/combained.png"
+                        ? "/img/combained.png"
                         : transport.transport_is_alone === 1
-                        ? "/images/alone.png"
+                        ? "/img/alone.png"
                         : "/img/no-alone.png"
                     }
                     alt=""
@@ -566,7 +696,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {transport.from_place || "- "}&nbsp;&nbsp;
-                  <img src="/images/arrowT.png" alt="" />{" "}
+                  <img src="/img/arrowT.png" alt="" />{" "}
                   {transport.to_place || "-"}
                 </div>
                 &nbsp; &nbsp; &nbsp;
@@ -593,13 +723,8 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             <div
               style={{ display: "flex", justifyContent: "end", margin: "10px" }}
             >
-              {user === "eventmanager" && (
-                <AssignButton
-                  key={item.id}
-                  adminasign={adminasign}
-                  item={item.id}
-                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
-                />
+              {user === "eventmanger" && (
+                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleGuestTransportAssign}>Assign</button>
               )}
             </div>
           </div>
@@ -611,6 +736,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
         // setSelectedItem(item.id);
         setSidePanelContent(
           <Box
+          style={{background:"#fff"}}
             sx={{
               borderRadius: "8px",
               padding: "16px",
@@ -660,7 +786,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <img
-                  src="/images/calender.png"
+                  src="/img/calender.png"
                   alt="Calendar"
                   style={{ width: "20px", height: "20px", marginRight: "5px" }}
                 />
@@ -694,13 +820,8 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginTop: "10px",
               }}
             >
-              {user === "eventmanager" && (
-                <AssignButton
-                  key={item.id}
-                  adminasign={adminasign}
-                  item={item.id}
-                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
-                />
+              {user === "eventmanger" && (
+                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleVenueAssign}>Assign</button>
               )}
             </div>
           </Box>
@@ -718,6 +839,8 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               margin: "auto",
               fontFamily: "Arial, sans-serif",
               backgroundColor: "#fff",
+              overflowY:"scroll",
+              height:"390px"
             }}
           >
             <h2
@@ -798,7 +921,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 }}
               >
                 <img
-                  src="/images/calender.png"
+                  src="/img/calender.png"
                   alt="Calendar"
                   style={{ width: "20px", height: "20px", marginRight: "5px" }}
                 />
@@ -824,13 +947,8 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginTop: "10px",
               }}
             >
-              {user === "eventmanager" && (
-                <AssignButton
-                  key={item.id}
-                  adminasign={adminasign}
-                  item={item.id}
-                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
-                />
+              {user === "eventmanger" && (
+                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleVenueRequirementsAssign}>Assign</button>
               )}
             </div>
           </div>
@@ -847,6 +965,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
+              background:"#fff",
             }}
           >
             <h2
@@ -914,7 +1033,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/images/boys.png"
+                      src="/img/boys.png"
                       alt="Boy"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -941,7 +1060,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/images/girls.png"
+                      src="/img/girls.png"
                       alt="Girl"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -976,7 +1095,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/images/male.png"
+                      src="/img/male.png"
                       alt="Male Faculty"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1005,7 +1124,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/images/female.png"
+                      src="/img/female.png"
                       alt="Female Faculty"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1070,7 +1189,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/images/boys.png"
+                      src="/img/boys.png"
                       alt="Boy"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1097,7 +1216,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/images/girls.png"
+                      src="/img/girls.png"
                       alt="Girl"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1132,7 +1251,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/images/male.png"
+                      src="/img/male.png"
                       alt="Male Faculty"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1160,7 +1279,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/images/female.png"
+                      src="/img/female.png"
                       alt="Female Faculty"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1198,12 +1317,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "0px",
               }}
             >
-              <AssignButton
-                key={item.id}
-                adminasign={adminasign}
-                item={item.id}
-                isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
-              />{" "}
+              <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleParticipantsAssign}>Assign</button>
             </div>
           </div>
         );
@@ -1317,7 +1431,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       </div>
 
       <div className="confirmsubmit">
-        {user === "eventmanager" ? (
+        {user === "eventmanger" ? (
           <Link to={"/"}>
             <button type="button">Go Back</button>
           </Link>

@@ -3,8 +3,8 @@ import "./infrawork.css";
 import { CiSquareMore } from "react-icons/ci";
 import Divider from "@mui/material/Divider";
 import { IoSendSharp } from "react-icons/io5";
-import suit from "/images/suit.png";
-import money from "/images/money.png";
+import suit from "/img/suit.png";
+import money from "/img/money.png";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 

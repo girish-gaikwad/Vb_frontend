@@ -35,7 +35,7 @@ padding-right: 20px;
 }
 .spbuttons{
 color: white;
-background-color: #3A77EF;
+background: linear-gradient(#3690ea, #1976d2);
 padding: 12px;
 border-radius: 8px;
 margin-right: 5px;
@@ -43,7 +43,7 @@ cursor: pointer;
 }
 .spbuttonsicon{
 color: white;
-background-color: #3A77EF;
+background: linear-gradient(#3690ea, #1976d2);
 padding: 5px;
 border-radius: 8px;
 margin-right: 5px;

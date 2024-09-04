@@ -94,17 +94,17 @@ const SpecialRequest = ({
   const validateSoupData = () => {
     const errors = {};
 
-    if (!tempSoupData.food) {
-      errors.food = "Preferred food is required.";
+    if (!tempSoupData.preferred_food) {
+      errors.preferred_food = "Preferred food is required.";
     }
     if (!tempSoupData.time) {
       errors.time = "Time is required.";
     }
-    if (!tempSoupData.venue) {
-      errors.venue = "Venue is required.";
+    if (!tempSoupData.to_venue) {
+      errors.to_venue = "Venue is required.";
     }
-    if (tempSoupData.quantity === 0) {
-      errors.quantity = "!";
+    if (tempSoupData.food_quantity === 0) {
+      errors.food_quantity = "required";
     }
 
     setSoupErrors(errors);
@@ -114,17 +114,17 @@ const SpecialRequest = ({
   const validateCarData = () => {
     const errors = {};
 
-    if (!tempCarData.quantity) {
-      errors.quantity = "!  ";
+    if (!tempCarData.car_count) {
+      errors.car_count = "required";
     }
-    if (!tempCarData.arrival) {
-      errors.arrival = "Arrival time is required.";
+    if (!tempCarData.arrival_at) {
+      errors.arrival_at = "Arrival time is required.";
     }
-    if (!tempCarData.departure) {
-      errors.departure = "Departure time is required.";
+    if (!tempCarData.depature_at) {
+      errors.depature_at = "Departure time is required.";
     }
-    if (!tempCarData.vehicleType) {
-      errors.vehicleType = "Vehicle type is required.";
+    if (!tempCarData.car_type) {
+      errors.car_type = "Vehicle type is required.";
     }
 
     setCarErrors(errors);
@@ -134,17 +134,17 @@ const SpecialRequest = ({
   const validateFastfoodData = () => {
     const errors = {};
 
-    if (!tempFastfoodData.refreshment) {
-      errors.refreshment = "Preferred refreshment is required.";
+    if (!tempFastfoodData.refreshment_dish) {
+      errors.refreshment_dish = "Preferred refreshment is required.";
     }
     if (!tempFastfoodData.time) {
       errors.time = "Time is required.";
     }
-    if (!tempFastfoodData.venue) {
-      errors.venue = "Venue is required.";
+    if (!tempFastfoodData.to_venue) {
+      errors.to_venue = "Venue is required.";
     }
     if (tempFastfoodData.quantity === 0) {
-      errors.quantity = "!";
+      errors.quantity = "required";
     }
 
     setFastfoodErrors(errors);
@@ -198,10 +198,10 @@ const SpecialRequest = ({
   const handleSliderChange = (event, newValue) => {
     switch (selectedBox) {
       case "soup":
-        setTempSoupData((prev) => ({ ...prev, quantity: newValue }));
+        setTempSoupData((prev) => ({ ...prev, food_quantity: newValue }));
         break;
       case "car":
-        setTempCarData((prev) => ({ ...prev, quantity: newValue }));
+        setTempCarData((prev) => ({ ...prev, car_count: newValue }));
         break;
       case "fastfood":
         setTempFastfoodData((prev) => ({ ...prev, quantity: newValue }));
@@ -218,13 +218,13 @@ const SpecialRequest = ({
       case "soup":
         setTempSoupData((prev) => ({
           ...prev,
-          quantity: Math.min(prev.quantity + 1, 100),
+          food_quantity: Math.min(prev.food_quantity + 1, 100),
         }));
         break;
       case "car":
         setTempCarData((prev) => ({
           ...prev,
-          quantity: Math.min(prev.quantity + 1, 100),
+          car_count: Math.min(prev.car_count + 1, 100),
         }));
         break;
       case "fastfood":
@@ -243,13 +243,13 @@ const SpecialRequest = ({
       case "soup":
         setTempSoupData((prev) => ({
           ...prev,
-          quantity: Math.max(prev.quantity - 1, 0),
+          food_quantity: Math.max(prev.food_quantity - 1, 0),
         }));
         break;
       case "car":
         setTempCarData((prev) => ({
           ...prev,
-          quantity: Math.max(prev.quantity - 1, 0),
+          car_count: Math.max(prev.car_count - 1, 0),
         }));
         break;
       case "fastfood":
@@ -263,8 +263,6 @@ const SpecialRequest = ({
     }
   };
 
-  // console.log(fastfoodData);
-  // Render dialog content based on the selected box
   const getDialogContent = () => {
     switch (selectedBox) {
       case "soup":
@@ -274,9 +272,9 @@ const SpecialRequest = ({
               Preferred food
             </Typography>
             <TextField
-              value={tempSoupData.food || ""}
+              value={tempSoupData.preferred_food || ""}
               onChange={(e) =>
-                setTempSoupData((prev) => ({ ...prev, food: e.target.value }))
+                setTempSoupData((prev) => ({ ...prev, preferred_food: e.target.value }))
               }
               placeholder="Eg: Chappathi"
               fullWidth
@@ -288,8 +286,8 @@ const SpecialRequest = ({
                 ),
               }}
               sx={{ marginBottom: 2 }}
-              error={!!soupErrors.food}
-              helperText={soupErrors.food}
+              error={!!soupErrors.preferred_food}
+              helperText={soupErrors.preferred_food}
             />
 
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -329,9 +327,9 @@ const SpecialRequest = ({
               Venue to give
             </Typography>
             <TextField
-              value={tempSoupData.venue || ""}
+              value={tempSoupData.to_venue || ""}
               onChange={(e) =>
-                setTempSoupData((prev) => ({ ...prev, venue: e.target.value }))
+                setTempSoupData((prev) => ({ ...prev, to_venue: e.target.value }))
               }
               placeholder="Eg: BIT Guest House"
               fullWidth
@@ -343,8 +341,8 @@ const SpecialRequest = ({
                 ),
               }}
               sx={{ marginBottom: 2 }}
-              error={!!soupErrors.venue}
-              helperText={soupErrors.venue}
+              error={!!soupErrors.to_venue}
+              helperText={soupErrors.to_venue}
             />
 
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -359,27 +357,28 @@ const SpecialRequest = ({
               }}
             >
               <Slider
-                value={tempSoupData.quantity || 0}
+                value={tempSoupData.food_quantity || 0}
                 onChange={handleSliderChange}
                 step={1}
                 min={0}
                 max={100}
                 valueLabelDisplay="auto"
                 sx={{ marginRight: 2 }}
-                error={!!soupErrors.quantity}
+                error={!!soupErrors.food_quantity}
+                helperText={soupErrors.food_quantity}
               />
               <div className="spbuttonsicon" onClick={handleRemove}>
                 <RemoveIcon />
               </div>
               <TextField
-                value={tempSoupData.quantity}
+                value={tempSoupData.food_quantity}
                 size="small"
                 sx={{ width: 85, marginRight: 1, marginLeft: 1 }}
                 InputProps={{
                   readOnly: true,
                 }}
-                error={!!soupErrors.quantity}
-                helperText={soupErrors.quantity}
+                error={!!soupErrors.food_quantity}
+                helperText={soupErrors.food_quantity}
               />
               <div className="spbuttonsicon" onClick={handleAdd}>
                 <AddIcon />
@@ -402,26 +401,28 @@ const SpecialRequest = ({
               }}
             >
               <Slider
-                value={tempCarData.quantity || 0}
+                value={tempCarData.car_count || 0}
                 onChange={handleSliderChange}
                 step={1}
                 min={0}
                 max={100}
                 valueLabelDisplay="auto"
                 sx={{ marginRight: 2 }} // Added space between slider and buttons
+                error={!!carErrors.car_count}
+                helperText={carErrors.car_count}
               />
               <div className="spbuttonsicon" onClick={handleRemove}>
                 <RemoveIcon />
               </div>
               <TextField
-                value={tempCarData.quantity || 0}
+                value={tempCarData.car_count || 0}
                 size="small"
                 sx={{ width: 90, marginRight: 1, marginLeft: 1 }}
                 InputProps={{
                   readOnly: true,
                 }}
-                error={!!carErrors.quantity}
-                helperText={carErrors.quantity}
+                error={!!carErrors.car_count}
+                helperText={carErrors.car_count}
               />
               <div className="spbuttonsicon" onClick={handleAdd}>
                 <AddIcon />
@@ -445,22 +446,22 @@ const SpecialRequest = ({
               type="datetime-local"
               id="end_at"
               name="end_at"
-              value={tempCarData.arrival || ""}
+              value={tempCarData.arrival_at || ""}
               onChange={(e) =>
                 setTempCarData((prev) => ({
                   ...prev,
-                  arrival: e.target.value,
+                  arrival_at: e.target.value,
                 }))
               }
               min={minDate}
             />
-            {!!carErrors.arrival && (
+            {!!carErrors.arrival_at && (
               <Typography
                 variant="body2"
                 color="error"
                 sx={{ marginBottom: 2 }}
               >
-                {carErrors.arrival}
+                {carErrors.arrival_at}
               </Typography>
             )}
 
@@ -481,22 +482,22 @@ const SpecialRequest = ({
               type="datetime-local"
               id="end_at"
               name="end_at"
-              value={tempCarData.departure || ""}
+              value={tempCarData.depature_at || ""}
               onChange={(e) =>
                 setTempCarData((prev) => ({
                   ...prev,
-                  departure: e.target.value,
+                  depature_at: e.target.value,
                 }))
               }
               min={minDate}
             />
-            {!!carErrors.departure && (
+            {!!carErrors.depature_at && (
               <Typography
                 variant="body2"
                 color="error"
                 sx={{ marginBottom: 2 }}
               >
-                {carErrors.departure}
+                {carErrors.depature_at}
               </Typography>
             )}
 
@@ -507,11 +508,11 @@ const SpecialRequest = ({
               {/* <InputLabel id="car-select-label">Select Car</InputLabel> */}
               <Select
                 labelId="car-select-label"
-                value={tempCarData.vehicleType || ""}
+                value={tempCarData.car_type || ""}
                 onChange={(e) =>
                   setTempCarData((prev) => ({
                     ...prev,
-                    vehicleType: e.target.value,
+                    car_type: e.target.value,
                   }))
                 }
                 label="Select Car"
@@ -527,13 +528,13 @@ const SpecialRequest = ({
               </Select>
             </FormControl>
 
-            {!!carErrors.vehicleType && (
+            {!!carErrors.car_type && (
               <Typography
                 variant="body2"
                 color="error"
                 sx={{ marginBottom: 2 }}
               >
-                {carErrors.vehicleType}
+                {carErrors.car_type}
               </Typography>
             )}
           </>
@@ -545,11 +546,11 @@ const SpecialRequest = ({
               Preferred Refreshment
             </Typography>
             <TextField
-              value={tempFastfoodData.refreshment || ""}
+              value={tempFastfoodData.refreshment_dish || ""}
               onChange={(e) =>
                 setTempFastfoodData((prev) => ({
                   ...prev,
-                  refreshment: e.target.value,
+                  refreshment_dish: e.target.value,
                 }))
               }
               placeholder="Eg: Chappathi"
@@ -561,8 +562,8 @@ const SpecialRequest = ({
                   </InputAdornment>
                 ),
               }}
-              error={!!fastfoodErrors.refreshment}
-              helperText={fastfoodErrors.refreshment}
+              error={!!fastfoodErrors.refreshment_dish}
+              helperText={fastfoodErrors.refreshment_dish}
               sx={{ marginBottom: 2 }}
             />
 
@@ -605,11 +606,11 @@ const SpecialRequest = ({
               Venue to give
             </Typography>
             <TextField
-              value={tempFastfoodData.venue || ""}
+              value={tempFastfoodData.to_venue || ""}
               onChange={(e) =>
                 setTempFastfoodData((prev) => ({
                   ...prev,
-                  venue: e.target.value,
+                  to_venue: e.target.value,
                 }))
               }
               placeholder="Eg: BIT Guest House"
@@ -622,13 +623,13 @@ const SpecialRequest = ({
                 ),
               }}
             />
-            {!!fastfoodErrors.venue && (
+            {!!fastfoodErrors.to_venue && (
               <Typography
                 variant="body2"
                 color="error"
                 sx={{ marginBottom: 2 }}
               >
-                {fastfoodErrors.venue}
+                {fastfoodErrors.to_venue}
               </Typography>
             )}
 
@@ -651,6 +652,8 @@ const SpecialRequest = ({
                 max={100}
                 valueLabelDisplay="auto"
                 sx={{ marginRight: 2 }} // Added space between slider and buttons
+                error={!!fastfoodErrors.quantity}
+                helperText={fastfoodErrors.quantity}
               />
               <div className="spbuttonsicon" onClick={handleRemove}>
                 <RemoveIcon />
@@ -662,8 +665,6 @@ const SpecialRequest = ({
                 InputProps={{
                   readOnly: true,
                 }}
-                error={!!fastfoodErrors.quantity}
-                helperText={fastfoodErrors.quantity}
               />
 
               <div className="spbuttonsicon" onClick={handleAdd}>
@@ -680,9 +681,9 @@ const SpecialRequest = ({
   };
 
   const boxes = [
-    { id: "car", image: "/images/car.png" },
-    { id: "soup", image: "/images/soup.png" },
-    { id: "fastfood", image: "/images/fastfood.png" },
+    { id: "car", image: "/img/car.png" },
+    { id: "soup", image: "/img/soup.png" },
+    { id: "fastfood", image: "/img/fastfood.png" },
     { id: "add", icon: <AddIcon sx={{ fontSize: 40, color: "#03a9f4" }} /> },
   ];
 
@@ -734,12 +735,12 @@ const SpecialRequest = ({
       >
         <DialogContent>{getDialogContent()}</DialogContent>
         <DialogActions>
-          <div onClick={handleClose} className="spbuttons">
+          <button onClick={handleClose} className="spbuttons">
             Cancel
-          </div>
-          <div onClick={handleSubmit} className="spbuttons">
+          </button>
+          <button onClick={handleSubmit} className="spbuttons">
             Confirm
-          </div>
+          </button>
         </DialogActions>
       </Dialog>
     </div>

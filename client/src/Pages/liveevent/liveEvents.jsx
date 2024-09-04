@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import account from "../../Assets/account_circle.png";
-import person from "../../Assets/person.png";
+import account from "../../assets/account_circle.png";
+import person from "../../assets/person.png";
 import "./liveEvent.css";
 import { helix } from "ldrs";
 import TreeStructure from "../flowchart/flowCharts";
 import SIDEBAR from "../sidebar/sidebar";
 import { Card, CardBody, Stack, Image } from "@chakra-ui/react";
-
 import { Link } from "react-router-dom";
 
 function LiveEvent({ setSelectedEvent }) {
-  // Accept setSelectedEvent as a prop
   const [card, setCard] = useState(false);
   const [eventx, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -128,7 +126,7 @@ function LiveEvent({ setSelectedEvent }) {
                   <CardBody>
                     <div className="imgdiv">
                       <Image
-                        src="/images/thumnail.png"
+                        src="/img/thumnail.png"
                         alt="Event Image"
                         borderRadius="lg"
                         objectFit="contain" /* Ensures the image covers the given height and width without distortion */
