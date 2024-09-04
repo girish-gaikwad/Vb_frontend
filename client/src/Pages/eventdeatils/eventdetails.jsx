@@ -157,7 +157,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
   }
 
 
-  if(user!=="user"){
+  if(user==="user"){
 
     if (!selectedEvent) {
         return (

@@ -8,17 +8,14 @@ import INFRAWORK from "./infra/pages/content/infrawork";
 import { useState } from "react";
 import EVENTMANAGERWORK from "./Event_manager/pages/content/eventmanagerwork";
 import EVENTAPPROVED from "./Event_manager/pages/approvedlist/eventapproved";
-import EventDetails from "./Event_manager/pages/eventdetails/EventDetails";
+// import EventDetails from "./Event_manager/pages/eventdetails/EventDetails";
 import EventDetailsriser from "./Pages/eventdeatils/eventdetails";
 // import person from "  ./Assets/person.png";
 
 function App() {
-  
   const [approvedEvents, setApprovedEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null); // State to store selected event data
   const [selectedEventriser, setSelectedEventriser] = useState(null); // State to store selected event data
-
- 
 
   const user = "eventmanager";
   // const user = "user";
@@ -46,8 +43,7 @@ function App() {
                   />
                   <Route path="/tree" element={<TreeStructure />} />
 
-
-{/* 
+                  {/* 
                   <Route
                     path="/infra"
                     element={
@@ -57,7 +53,6 @@ function App() {
                       />
                     }
                   /> */}
-
 
                   <Route
                     path="/pending"
@@ -73,12 +68,9 @@ function App() {
                     path="/approved"
                     element={<EVENTAPPROVED approvedEvents={approvedEvents} />}
                   />
-                  <Route
-                    path="/event/:id"
-                    element={<EventDetails selectedEvent={selectedEvent} />}
-                  />
-                  {/* <Route path="/eventriser/:id" element={<EventDetailsriser selectedEvent={selectedEventriser} />} />  */}
 
+                  {/* <Route path="/eventriser/:id" element={<EventDetailsriser selectedEvent={selectedEventriser} />} />  */}
+x``
                   <Route
                     path="/registered-event/:id"
                     element={
