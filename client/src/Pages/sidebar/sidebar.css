@@ -1,0 +1,95 @@
+/* src/Sidebar.css */
+.sidebar {
+    padding-top:3% ;
+    width: 260px;
+    background-color: white;
+    height: 100%; /* Full viewport height */
+    overflow: hidden;
+    /* position: fixed; Fixed sidebar */
+    top: 0;
+    left: 0;
+    border-right:1px rgb(138, 135, 135) solid ;
+    overflow-y: auto; /* Scroll if content is too tall */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    display:flex;
+    margin-bottom: 50px;
+    justify-content: center;
+}
+
+.sidebar ul li a {
+    display:flex;
+    width: 130px;  
+    align-items: center;
+
+        
+    color: #fff;
+    text-decoration: none;
+}
+
+.sidebar ul li a:hover {
+    background-color: #ffffff; /* Highlight on hover */
+}
+
+img{
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+.blue{
+    color: #2B3674;
+}
+.gray{
+    
+    color: gray;
+}
+
+
+
+
+
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    margin: 10px 0;
+  }
+  
+
+  
+  .link-text {
+    margin-left: 10px;
+    color: #575757;
+    font-weight: bold; /* Optional: Makes the text bolder */
+  }
+  
+  /* Style for active link */
+  .active .link-text {
+    color: #2B3674; /* Change to your desired color for active link */
+  }
+  
+  
+  
+ .sidebar img {
+  transition: filter 0.3s ease; /* Optional: Smooth transition for filter effect */
+}
+
+.active img {
+  filter: none; /* No filter applied for active state */
+}
+
+.inactive img {
+  filter: grayscale(100%); /* Fully gray for inactive state */
+}
+

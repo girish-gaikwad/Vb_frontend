@@ -1,0 +1,830 @@
+import React, { useState } from "react";
+import "./flowChart.css";
+import axios from "axios";
+import Event from "../../Assets/Event.png";
+import Guest from "../../Assets/Guest.png";
+import Participants from "../../Assets/Participants.png";
+import Venue from "../../Assets/Venue.png";
+import Transport from "../../Assets/Transport.png";
+import Accomodation from "../../Assets/Accomodation.png";
+import Food from "../../Assets/Food.png";
+import VenueRequirements from "../../Assets/Venue Requirements.png";
+import { CircularProgress } from "@mui/material";
+import myGif from "/bin-file.gif";
+import {
+  EventPopup,
+  GuestPopup,
+  ParticipantsPopup,
+  AccomodationPopup,
+  TransportPopup,
+  VenuePopup,
+  VenueRequirementPopup,
+} from "../popups/popUp";
+import SpecialRequest from "../specialrequest/specialrequest";
+import { useNavigate } from "react-router-dom";
+
+const treeData = [
+  {
+    id: "Event",
+    image: Event,
+    popup: "EventPopup",
+    children: [
+      {
+        id: "Invitees",
+        image: Guest,
+        children: [
+          {
+            id: "Guest",
+            image: Guest,
+            popup: "GuestPopup",
+            children: [
+              {
+                id: "Accomodation",
+                image: Accomodation,
+                popup: "AccomodationPopup",
+              },
+              {
+                id: "Transport",
+                image: Transport,
+                popup: "TransportPopup",
+              },
+            ],
+          },
+          {
+            id: "Participants",
+            image: Participants,
+            popup: "ParticipantsPopup",
+          },
+        ],
+      },
+      {
+        id: "Venue",
+        image: Venue,
+        popup: "VenuePopup",
+        children: [
+          {
+            id: "Venue Requirements",
+            image: VenueRequirements,
+            popup: "VenueRequirementPopup",
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const TreeStructure = () => {
+  const [isEventCompleted, setIsEventCompleted] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [colorMap, setColorMap] = useState({});
+  const [progressMap, setProgressMap] = useState({ Invitees: 0 });
+  const [completedItems, setCompletedItems] = useState([]);
+
+  console.log("here is colormap", colorMap);
+  const [changeborder, setborder] = useState({});
+
+  const [formData, setFormData] = useState({
+    user_id: 1,
+    event_name: "",
+    start_at: "",
+    end_at: "",
+    event_type: "",
+    assigned_to: "",
+  });
+  const [inviteesData, setinviteesData] = useState({});
+  const [cards, setCards] = useState([
+    {
+      id: 1,
+      event_id: 3,
+      invitees_id: 1,
+      salutation: "",
+      first_name: "",
+      last_name: "",
+      gender: "",
+      designation: "",
+      organization: "",
+      email: "",
+      country_code: "",
+      phone_number: "",
+      accommodation_venue: "",
+      arrival_at: "",
+      departure_at: "",
+      vehicle_type: "",
+      travel_type: "both",
+      t_arrival_at: "",
+      t_depature_at: "",
+      from_place: "",
+      to_place: "",
+      r_from_plcae: "",
+      r_to_plcae: "",
+            
+    },
+  ]);
+
+
+  console.log("girish",cards);
+  
+
+  const [participantsData, setParticipantsData] = useState({
+    event_id: "",
+    invitees_id: "",
+    internal_count: 0,
+    ex_boys_count: 0,
+    ex_girls_count: 0,
+    male_faculty_count: 0,
+    female_faculty_count: 0,
+    accommodation_status: false,
+    acc_boys_count: 0,
+    acc_girls_count: 0,
+    acc_male_faculty_count: 0,
+    acc_female_faculty_count: 0,
+  });
+
+  const [groups, setGroups] = useState([]);
+  const [aloneGuests, setAloneGuests] = useState([]);
+
+  console.log(aloneGuests);
+
+  const [lastAction, setLastAction] = useState(null);
+  const [selectedGuest, setSelectedGuest] = useState(null);
+  const [startStep, setStartStep] = useState(0);
+
+  const mergearray = [...groups, ...aloneGuests];
+
+  const [VenueData, setVenueData] = useState({
+    event_id: "",
+    venue_type: "",
+    venue_name: [],
+    venue_count: 0,
+    capacity: 0,
+  });
+  const [selectedContent, setSelectedContent] = useState([]);
+  const [selected, setSelected] = useState([]);
+  const [quantities, setQuantities] = useState({
+    event_id: "",
+    venue_id: "",
+    chair_count: 0,
+    dais_table_count: 0,
+    white_board_count: 0,
+    hand_mic_count: 0,
+    help_desk_count: 0,
+    collar_mic_count: 0,
+    internet_count: 0,
+    live_stream_count: 0,
+    biometric_count: 0,
+    photography_count: 0,
+    videography_count: 0,
+    large_momento_count: 0,
+    small_momento_count: 0,
+    shawl_count: 0,
+    pen_pencil_count: 0,
+    scribbling_pad_count: 0,
+    water_bottle_count: 0,
+    others: 0,
+  });
+
+  const [Tgroups, TsetGroups] = useState([]);
+  const [TaloneGuests, TsetAloneGuests] = useState([]);
+
+  const [soupData, setSoupData] = useState({
+    food: "",
+    time: "",
+    venue: "",
+    quantity: 0,
+  });
+  const [carData, setCarData] = useState({
+    quantity: 0,
+    vehicleType: "",
+    arrival: "",
+    departure: "",
+  });
+  const [fastfoodData, setFastfoodData] = useState({
+    refreshment: "",
+    time: "",
+    venue: "",
+    quantity: 0,
+  });
+
+  const confirm = async () => {
+    try {
+      /** Step 1: Format Start and End Dates **/
+      const formattedStartDate = `${formData.start_at.replace("T", " ")}:00`;
+      const formattedEndDate = `${formData.end_at.replace("T", " ")}:00`;
+
+      const formattedFormData = {
+        ...formData,
+        start_at: formattedStartDate,
+        end_at: formattedEndDate,
+      };
+
+      // console.log("Formatted Event Data:", formattedFormData);
+
+      /** Step 2: Create Event and Obtain event_id **/
+      const eventResponse = await axios.post(
+        "http://localhost:8000/post/eventform",
+        formattedFormData
+      );
+      const event_id = eventResponse.data.event_id;
+      // console.log("Created Event with ID:", event_id);
+
+      /** Step 3: Create Invitees with event_id **/
+      const initialInviteesData = {
+        event_id,
+        guest_count: 0, // Initialize with 0; will update after guests are added
+      };
+
+      const inviteesResponse = await axios.post(
+        "http://localhost:8000/post/invitees",
+        initialInviteesData
+      );
+      const invitees_id = inviteesResponse.data.invitees_id;
+      // console.log("Created Invitees with ID:", invitees_id);
+
+      /** Step 4: Prepare and Create Guests **/
+      const updatedGuests = cards.map((card) => ({
+        ...card,
+        event_id,
+        invitees_id,
+      }));
+
+      // console.log("Prepared Guest Data:", updatedGuests);
+
+      const guestResponse = await axios.post(
+        "http://localhost:8000/post/eventguest",
+        updatedGuests
+      );
+
+      // console.log("Guest API Response:", guestResponse.data);
+
+      const unsortedGuestIdsArray = guestResponse.data.guest_id;
+      const guestIdsArray = unsortedGuestIdsArray.slice().sort((a, b) => a - b);
+
+      // console.log(guestIdsArray.join(", "));
+
+      const formatDateTime = (isoString) => {
+        return `${isoString.replace("T", " ").split(".")[0]}:00`;
+      };
+
+      // Create a new array for combineaccommodation data
+      const CombineAccommodationData = [];
+
+      mergearray.forEach((preference, index) => {
+        if (Array.isArray(preference)) {
+          // Pairing logic
+          const [firstGuestIndex, secondGuestIndex] = preference.map(
+            (p) => p - 1
+          );
+
+          CombineAccommodationData.push(
+            {
+              event_id: "",
+              guest_id: guestIdsArray[firstGuestIndex],
+              is_alone: false,
+              pair_with: guestIdsArray[secondGuestIndex],
+              arrival_at: formatDateTime(cards[firstGuestIndex].arrival_at), // Formatting arrival_at
+              departure_at: formatDateTime(cards[firstGuestIndex].departure_at), // Formatting departure_at
+              accommodation_venue: cards[firstGuestIndex].accommodation_venue, // Adding accommodation_venue
+            },
+            {
+              event_id: "",
+              guest_id: guestIdsArray[secondGuestIndex],
+              is_alone: false,
+              pair_with: guestIdsArray[firstGuestIndex],
+              arrival_at: formatDateTime(cards[secondGuestIndex].arrival_at), // Formatting arrival_at
+              departure_at: formatDateTime(
+                cards[secondGuestIndex].departure_at
+              ), // Formatting departure_at
+              accommodation_venue: cards[secondGuestIndex].accommodation_venue, // Adding accommodation_venue
+            }
+          );
+        } else {
+          // Alone logic
+          const guestIndex = preference - 1;
+          CombineAccommodationData.push({
+            event_id: "",
+            guest_id: guestIdsArray[guestIndex],
+            is_alone: true,
+            pair_with: null,
+            arrival_at: formatDateTime(cards[guestIndex].arrival_at), // Formatting arrival_at
+            departure_at: formatDateTime(cards[guestIndex].departure_at), // Formatting departure_at
+            accommodation_venue: cards[guestIndex].accommodation_venue, // Adding accommodation_venue
+          });
+        }
+      });
+
+      const updatedCombineAccommodation = CombineAccommodationData.map(
+        (data) => ({
+          ...data,
+          event_id: event_id,
+        })
+      );
+      // console.log("Accommodation Data:", updatedCombineAccommodation);
+
+      const CombineAccommodationResponse = await axios.post(
+        "http://localhost:8000/post/combineaccommodation",
+        updatedCombineAccommodation
+      );
+
+      const unsortedCombineAccommodationIdArray =
+        CombineAccommodationResponse.data.CombineAccommodation_id;
+      const CombineAccommodationIdArray = unsortedCombineAccommodationIdArray
+        .slice()
+        .sort((a, b) => a - b);
+
+      // console.log(CombineAccommodationIdArray);
+
+      const guest_count = guestIdsArray.length;
+      // console.log("Total Guests Count:", guest_count);
+
+      /** Step 5: Update Invitees with guest_count **/
+      const updatedInviteesData = {
+        event_id,
+        guest_count,
+      };
+
+      await axios.put(
+        "http://localhost:8000/put/invitees",
+        updatedInviteesData
+      );
+
+      // console.log("Updated Invitees with Guest Count:", guest_count);
+
+      /** Step 6: Prepare and Create Participants **/
+      const updatedParticipants = {
+        ...participantsData,
+        event_id,
+        invitees_id,
+      };
+
+      const participantsResponse = await axios.post(
+        "http://localhost:8000/post/participants",
+        updatedParticipants
+      );
+      const participants_id = participantsResponse.data.Participant_id;
+      // console.log("Created Participants with ID:", participants_id);
+
+      /** Step 7: Prepare and Create Venue Booking **/
+      const updatedVenue = {
+        ...VenueData,
+        event_id,
+      };
+
+      const venueResponse = await axios.post(
+        "http://localhost:8000/post/venueregister",
+        updatedVenue
+      );
+      const venue_id = venueResponse.data.VenueBooking_id;
+      // console.log("Created Venue Booking with ID:", venue_id);
+
+      const updatedVenueRequirement = {
+        ...quantities,
+        event_id,
+        venue_id,
+      };
+
+      const venueRequirementResponse = await axios.post(
+        "http://localhost:8000/post/venuerequirement",
+        updatedVenueRequirement
+      );
+      const VenueRequirement_id =
+        venueRequirementResponse.data.VenueRequirement_id;
+      // console.log("Created Venue Booking with ID:", VenueRequirement_id);
+
+      /** Final Step: Success Alert **/
+      alert(
+        `Data saved successfully!
+        Event ID: ${event_id}
+        Invitees ID: ${invitees_id}
+        Guest IDs: ${guestIdsArray.join(", ")}
+        Participants ID: ${participants_id}
+        Venue Booking ID: ${venue_id}
+        VenueRequirement ID: ${VenueRequirement_id}
+        combineaccommodation created with id :${CombineAccommodationIdArray.join(
+          ", "
+        )}`
+      );
+
+
+
+    } catch (error) {
+      console.error("Error in confirm function:", error.message);
+      alert(
+        "An error occurred while saving data. Please check the console for details."
+      );
+    }
+  };
+
+  const handleBoxClick = (item) => {
+    if (item.id === "Event" || isEventCompleted || item.id === "Invitees") {
+      setSelectedItem(item);
+    }
+  };
+
+  const handleSave = () => {
+    setColorMap((prev) => ({
+      ...prev,
+      [selectedItem.id]: "#bbcbf2", // Change color to blue
+    }));
+    setborder((prev) => ({
+      ...prev,
+      [selectedItem.id]: "2.5px solid #2d5dd9", // Change border to blue
+    }));
+    if (selectedItem.id === "Event") {
+      setIsEventCompleted(true);
+    }
+
+    if (
+      ["Guest", "Participants", "Accomodation", "Transport"].includes(
+        selectedItem.id
+      ) &&
+      !completedItems.includes(selectedItem.id)
+    ) {
+      // Add the selected item to the list of completed items
+      setCompletedItems((prev) => [...prev, selectedItem.id]);
+
+      // Increment progress
+      setProgressMap((prev) => ({
+        ...prev,
+        Invitees: Math.min(prev.Invitees + 25, 100), // Increase by 25% per node completion
+      }));
+    }
+  };
+
+  const renderPopup = () => {
+    if (!selectedItem) return null;
+    const popupProps = {
+      onClose: () => setSelectedItem(null),
+      onSave: handleSave,
+    };
+    switch (selectedItem.popup) {
+      case "EventPopup":
+        return (
+          <EventPopup
+            {...popupProps}
+            formData={formData}
+            setFormData={setFormData}
+          />
+        );
+      case "GuestPopup":
+        return <GuestPopup {...popupProps} cards={cards} setCards={setCards} />;
+      case "AccomodationPopup":
+        return (
+          <AccomodationPopup
+            {...popupProps}
+            cards={cards}
+            setCards={setCards}
+            groups={groups}
+            setGroups={setGroups}
+            aloneGuests={aloneGuests}
+            setAloneGuests={setAloneGuests}
+            lastAction={lastAction}
+            setLastAction={setLastAction}
+            selectedGuest={selectedGuest}
+            setSelectedGuest={setSelectedGuest}
+            startStep={startStep}
+            setStartStep={setStartStep}
+          />
+        );
+      case "TransportPopup":
+        return (
+          <TransportPopup
+            {...popupProps}
+            cards={cards}
+            setCards={setCards}
+            Tgroups={Tgroups}
+            TsetGroups={TsetGroups}
+            TaloneGuests={TaloneGuests}
+            TsetAloneGuests={TsetAloneGuests}
+          />
+        );
+
+      case "ParticipantsPopup":
+        return (
+          <ParticipantsPopup
+            {...popupProps}
+            participantsData={participantsData}
+            setParticipantsData={setParticipantsData}
+          />
+        );
+      case "VenuePopup":
+        return (
+          <VenuePopup
+            {...popupProps}
+            VenueData={VenueData}
+            setVenueData={setVenueData}
+          />
+        );
+      case "VenueRequirementPopup":
+        return (
+          <VenueRequirementPopup
+            {...popupProps}
+            quantities={quantities}
+            setQuantities={setQuantities}
+            selectedContent={selectedContent}
+            setSelectedContent={setSelectedContent}
+            selected={selected}
+            setSelected={setSelected}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const isConfirmEnabled = () => {
+    return colorMap.hasOwnProperty("Event") && colorMap.hasOwnProperty("Venue");
+  };
+
+  const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
+
+  const handleGoBackClick = () => {
+    setShowPopup(true);
+  };
+
+  const handleConfirm = () => {
+    // User confirmed, erase data and navigate to home page
+    // Perform any data erasure or cleanup here if needed
+    navigate("/");
+  };
+
+  const handleCancel = () => {
+    // User canceled, just close the popup
+    setShowPopup(false);
+  };
+
+  return (
+    <>
+      <div className="tree">
+        {treeRendering(
+          treeData,
+          handleBoxClick,
+          colorMap,
+          changeborder,
+          progressMap
+        )}
+        {renderPopup()}
+
+        <div
+          className="relative"
+          style={{
+            pointerEvents: colorMap.hasOwnProperty("Event") ? "auto" : "none", // Enable pointer events if "Event" exists, otherwise disable
+          }}
+        >
+          <SpecialRequest
+            soupData={soupData}
+            setSoupData={setSoupData}
+            carData={carData}
+            setCarData={setCarData}
+            fastfoodData={fastfoodData}
+            setFastfoodData={setFastfoodData}
+          />{" "}
+        </div>
+      </div>
+
+      <div
+        className="confirmsubmit"
+        style={{ display: "flex", justifyContent: "end" }}
+      >
+        <div
+          onClick={(e) => {
+            if (!isConfirmEnabled()) {
+              e.preventDefault(); // Prevents any action if not enabled
+              return;
+            }
+            confirm();
+          }}
+          style={{
+            padding: "8px",
+            borderRadius: "4px",
+            marginRight: "8px",
+            backgroundColor: isConfirmEnabled() ? "#4CAF50" : "gray", // Green if enabled, gray if disabled
+            color: "white",
+            cursor: isConfirmEnabled() ? "pointer" : "not-allowed", // Change cursor to cancel icon if not enabled
+            // Removed pointerEvents to ensure cursor style is applied
+          }}
+        >
+          Confirm
+        </div>
+
+        <div
+          style={{
+            padding: "8px",
+            borderRadius: "5px",
+            backgroundColor: "gray",
+            marginRight: "8px",
+            color: "white",
+          }}
+          type="submit"
+        >
+          Re-Request
+        </div>
+
+        <div>
+          <div
+            type="submit"
+            style={{
+              padding: "8px",
+              borderRadius: "5px",
+              backgroundColor: "#2D5DD9",
+              marginRight: "8px",
+              color: "white",
+              cursor: "pointer", // Add cursor pointer for better UX
+            }}
+            onClick={handleGoBackClick}
+          >
+            Go Back
+          </div>
+
+          {showPopup && (
+            <div
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "white",
+                padding: "20px",
+                borderRadius: "10px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                zIndex: 1000,
+              }}
+            >
+              <p>All data will be erased. Are you sure?</p>
+
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <img
+                  src={myGif}
+                  alt="My GIF"
+                  style={{ width: "150px", height: "150px" }}
+                />
+              </div>
+              <div style={{ display: "flex", justifyContent: "end" }}>
+                <div
+                  style={{
+                    padding: "8px",
+                    borderRadius: "5px",
+                    backgroundColor: "#2D5DD9",
+                    marginRight: "8px",
+                    color: "white",
+                    cursor: "pointer", // Add cursor pointer for better UX
+                  }}
+                  onClick={handleConfirm}
+                >
+                  OK
+                </div>
+
+                <div
+                  style={{
+                    padding: "8px",
+                    borderRadius: "5px",
+                    backgroundColor: "gray",
+                    marginRight: "8px",
+                    color: "white",
+                  }}
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showPopup && (
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                zIndex: 999,
+              }}
+              onClick={handleCancel}
+            />
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
+const treeRendering = (
+  treeData,
+  handleBoxClick,
+  colorMap,
+  changeborder,
+  progressMap
+) => {
+  return (
+    <>
+      <ul>
+        {treeData.map((item) => (
+          <li key={item.id} className={`${item.text} ${item.id}`}>
+            <div className="logoimage" onClick={() => handleBoxClick(item)}>
+              <div
+                className="formbox"
+                style={{
+                  border:
+                    item.id !== "Invitees"
+                      ? changeborder[item.id] || "2.5px solid #f77575"
+                      : "none",
+                  backgroundColor:
+                    item.id !== "Invitees"
+                      ? colorMap[item.id] || "#fe6f6f45"
+                      : "transparent",
+                  cursor:
+                    item.id !== "Event" &&
+                    !colorMap["Event"] &&
+                    item.id !== "Invitees"
+                      ? "not-allowed"
+                      : "pointer" && item.id === "Invitees"
+                      ? "context-menu"
+                      : "",
+                  position: "relative",
+                  // For positioning the CircularProgress
+                }}
+              >
+                {item.id === "Invitees" && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 1,
+                      left: 3,
+                      zIndex: 1,
+                      border: "solif black",
+                    }}
+                  >
+                    <CircularProgress
+                      variant="determinate"
+                      value={100}
+                      size="80px"
+                      thickness={2}
+                      className="grayProgress"
+                      style={{
+                        position: "absolute",
+                        top: 2,
+                        left: 8,
+                        zIndex: 1,
+                        border: "solif black",
+                      }}
+                    />
+                    <CircularProgress
+                      variant="determinate"
+                      value={progressMap.Invitees}
+                      size="80px"
+                      thickness={2}
+                      className="redProgress"
+                      style={{
+                        position: "absolute",
+                        top: 2,
+                        left: 8,
+                        zIndex: 1,
+                        border: "solif black",
+                      }}
+                    />
+                  </div>
+                )}
+                <img
+                  src={item.image}
+                  alt={item.id}
+                  style={{
+                    // zIndex: 2,
+                    position: "relative",
+                    width: item.id === "Invitees" ? "70px" : "", // Reduce size only for Invitees
+                    top: item.id === "Invitees" ? "10px" : "", // Reduce size only for Invitees
+                    height: item.id === "Invitees" ? "auto" : "", // Adjust height to maintain aspect ratio
+                  }}
+                />
+                <h6
+                  className="flowname"
+                  style={{
+                    position: "relative",
+                    top: item.id === "Invitees" ? "15px" : "", // Reduce
+                  }}
+                >
+                  {item.id}
+                </h6>
+              </div>
+            </div>
+            {item.children && item.children.length
+              ? treeRendering(
+                  item.children,
+                  handleBoxClick,
+                  colorMap,
+                  changeborder,
+                  progressMap
+                )
+              : null}
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
+export default TreeStructure;
+
+// value={item.vehicle_type} // Set the current value
+// onChange={(e) => onInputChange(item.id, "vehicle_type", e.target.value)}

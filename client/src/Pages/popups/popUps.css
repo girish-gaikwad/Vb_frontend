@@ -1,0 +1,340 @@
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+}
+
+.popup-content h2 {
+  margin-bottom: 10px;
+}
+
+.popup-buttons {
+ 
+  text-align: right;
+}
+
+.popup-buttons button {
+  padding: 3px 18px;
+  height: 35px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-image: linear-gradient(#3690ea, #1976d2);
+  color: white;
+}
+
+.popup-buttons button:last-child {
+  background-color: #6c757d;
+}
+.event-form label{
+    color: #2B3674;
+}
+.event-form input {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.event-form .datebox{
+    display: flex;
+
+}
+
+.event-type{
+    margin: 10px 0;
+}
+.event-type input[type="radio"] {
+    display: none;
+}
+
+.event-type label {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: rgb(80, 80, 80);
+  margin: 5px;
+  display: inline-block;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.event-type input[type="radio"]:checked + label {
+  background: linear-gradient(#3690ea, #1976d2);
+  color: white;
+}
+
+
+
+/* venue requirement css */
+.grid-container {
+ gap: 3%;
+  display: grid; 
+  grid-template-columns: repeat(7, 1fr); 
+  width: 100%;
+  height: 85%;
+}
+.flex{
+  display: flex;
+  height: 80%;
+  
+  justify-content: center;
+  align-items: center;
+}
+.itemschoosing{
+  display: flex;
+  flex-direction: column;
+  gap: 2%;
+  height: 100%;
+}
+.circlex {
+  background-color: #f0f0f0;
+  padding: 20px;
+  height: 80px;
+  width:  80px;
+  border-radius: 50%;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.circlex.selected {
+  border: 2px solid #2B3674; 
+}
+
+@media (max-width: 1200px) {
+  .grid-container {
+    grid-template-columns: repeat(6, 1fr); /* Adjust to 6 columns for smaller screens */
+  }
+}
+
+@media (max-width: 900px) {
+  .grid-container {
+    grid-template-columns: repeat(5, 1fr); /* Adjust to 5 columns for even smaller screens */
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-container {
+    grid-template-columns: repeat(4, 1fr); /* Adjust to 4 columns for small screens */
+  }
+}
+.item-name{
+  padding-left: 15px;
+
+}
+@media (max-width: 400px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr); /* Adjust to 2 columns for very small screens */
+  }
+}
+.circlex{
+
+   object-fit: contain;
+}
+
+
+
+/* Participation card flip start */
+.card-front,
+.card-back {
+  
+  position: absolute;
+  backface-visibility: hidden;
+  transition: transform 1.5s
+}
+
+.card-front {
+  transform: rotateY(0deg);
+}
+
+.card-back {
+  transform: rotateY(-180deg);
+  font-size: 10px;
+  /* text-align: center; */
+  font-size: 15px;
+}
+
+.flipped .card-front {
+  transform: rotateY(180deg);
+}
+
+.flipped .card-back {
+  transform: rotateY(0deg);
+}
+/* Participation card flip end */
+
+
+
+
+/* Accomodation popup css start */
+.accomodation{
+  height: 85%;
+  max-height: 630px;
+  width: 60%;
+}
+
+
+.ctd{
+  background-color: #fbfbfb;
+  border-radius: 11px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pair{
+  border-radius:5px ;
+  background-color: #dcfaf8;
+  border:2px #5ce9de solid;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.alone{
+  border-radius:5px ;
+  background-color: #ffcfe0;
+  border:2px #fb73a0 solid;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.options{
+  background-color: #fbfbfb;
+  border-radius: 8px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.undoalone{
+  border-radius:5px ;
+  background-color: #ffcfe0;
+  border:2px #fb73a0 solid;
+ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.arrow1{
+  position: absolute;
+  top: 16.5%;
+  left: 23%;
+}
+.iconarrow{
+  transform: rotateY(180deg);
+width: 45px;
+cursor: pointer;
+}
+.iconarrowR{
+  width: 45px;
+cursor: pointer;
+}
+.boss{
+  /* border: #000000 solid; */
+  margin: 0;  
+  display: flex;
+  justify-content: center;
+}
+.sus{
+  /* background-color: #ff0000; */
+  position: absolute;
+  top: 65px;
+}
+.guestNames{
+/* background-color: #1976d2; */
+  width: 120px;
+  height: 50px;
+
+  position: absolute  ;
+  top: -63px;
+  left:25%;
+}
+.guestname{
+  position: relative;
+  top: -50px;
+}
+.guestImage {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.cardsarrow{
+  display: flex;
+  justify-content: center;
+  align-items: center ;border-radius: 8px;
+background-color: #e7e8f2;
+height: 35px;
+width: 35px;
+}
+/* Accomodation popup css end */
+
+/* Transport popup css strat  */
+
+.transport{
+  width: 60%;
+  height: 85%;
+  max-height: 630px;
+}
+.optionsjoin{
+  border-radius:5px ;
+  background-color: #dcfaf8;
+  border:2px #5ce9de solid;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  /* width: 25px; */
+  height: 23px;
+  /* padding: 2px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.a{
+  /* background-color: #1976d2; */
+  height: 120px;
+  position: relative;
+  top: 48px;
+}
+.transportsave{
+  text-align: end;
+  /* align-content: center; */
+  margin-top:9% ;
+  /* border: solid black; */
+  /* position: fixed; */
+  bottom: 5px;
+}
+
+
+
+/* Transport popup css end  */
+
+
+
+
