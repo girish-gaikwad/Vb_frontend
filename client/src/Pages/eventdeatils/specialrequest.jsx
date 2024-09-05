@@ -584,9 +584,9 @@ const SpecialRequest = ({
   };
 
   const boxes = [
-    { id: "car", image: "/images/car.png" },
-    { id: "soup", image: "/images/soup.png" },
-    { id: "fastfood", image: "/images/fastfood.png" },
+    { id: "car", image: "/img/car.png" },
+    { id: "soup", image: "/img/soup.png" },
+    { id: "fastfood", image: "/img/fastfood.png" },
     // { id: "add", icon: <AddIcon sx={{ fontSize: 40, color: "#03a9f4" }} /> },
   ];
 

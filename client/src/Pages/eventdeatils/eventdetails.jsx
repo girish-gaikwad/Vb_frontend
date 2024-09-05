@@ -138,8 +138,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
         "An error occurred while saving data. Please check the console for details."
       );
     }
-
-  }
+  };
   const handleGuestAssign = async () => {
     try {
       const GuestAssignResponse = await axios.put(
@@ -152,14 +151,13 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       if (GuestAssignResponse.status === 200) {
         alert("Guest Assign Status updated successfully");
       }
-    }catch (error) {
+    } catch (error) {
       console.error("Error in handleGuestAssign function:", error.message);
       alert(
         "An error occurred while saving data. Please check the console for details."
       );
     }
-
-  }
+  };
   const handleGuestAccomodationAssign = async () => {
     try {
       const GuestAccomodationAssignResponse = await axios.put(
@@ -172,14 +170,16 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       if (GuestAccomodationAssignResponse.status === 200) {
         alert("Guest Accomodation Assign Status updated successfully");
       }
-    }catch (error) {
-      console.error("Error in handleGuestAccomodationAssign function:", error.message);
+    } catch (error) {
+      console.error(
+        "Error in handleGuestAccomodationAssign function:",
+        error.message
+      );
       alert(
         "An error occurred while saving data. Please check the console for details."
       );
     }
-
-  }
+  };
   const handleGuestTransportAssign = async () => {
     try {
       const GuestTransportAssignResponse = await axios.put(
@@ -192,14 +192,16 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       if (GuestTransportAssignResponse.status === 200) {
         alert("Guest Transport Assign Status updated successfully");
       }
-    }catch (error) {
-      console.error("Error in handleGuestTransportAssign function:", error.message);
+    } catch (error) {
+      console.error(
+        "Error in handleGuestTransportAssign function:",
+        error.message
+      );
       alert(
         "An error occurred while saving data. Please check the console for details."
       );
     }
-    
-  }
+  };
   const handleParticipantsAssign = async () => {
     try {
       const ParticipantsAssignResponse = await axios.put(
@@ -212,14 +214,16 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       if (ParticipantsAssignResponse.status === 200) {
         alert("Participants Assign Status updated successfully");
       }
-    }catch (error) {
-      console.error("Error in handleParticipantsAssign function:", error.message);
+    } catch (error) {
+      console.error(
+        "Error in handleParticipantsAssign function:",
+        error.message
+      );
       alert(
         "An error occurred while saving data. Please check the console for details."
       );
     }
-
-  }
+  };
   const handleVenueAssign = async () => {
     try {
       const VenueAssignResponse = await axios.put(
@@ -232,14 +236,13 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       if (VenueAssignResponse.status === 200) {
         alert("Venue Assign Status updated successfully");
       }
-    }catch (error) {
+    } catch (error) {
       console.error("Error in handleVenueAssign function:", error.message);
       alert(
         "An error occurred while saving data. Please check the console for details."
       );
     }
-
-  }
+  };
   const handleVenueRequirementsAssign = async () => {
     try {
       const VenueRequirementsAssignResponse = await axios.put(
@@ -252,23 +255,25 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       if (VenueRequirementsAssignResponse.status === 200) {
         alert("Venue Requirements Assign Status updated successfully");
       }
-    }catch (error) {
-      console.error("Error in handleVenueRequirementsAssign function:", error.message);
+    } catch (error) {
+      console.error(
+        "Error in handleVenueRequirementsAssign function:",
+        error.message
+      );
       alert(
         "An error occurred while saving data. Please check the console for details."
       );
     }
-
-  }
+  };
 
   useEffect(() => {
     const getStatusColor = (status) => {
       switch (status) {
-        case 0: // Status 0 might indicate a pending or inactive status
+        case 1: // Status 0 might indicate a pending or inactive status
           return "#f2bbcb"; // Example: Red-ish color for pending/inactive
-        case 1: // Status 1 might indicate an active or confirmed status
+        case 2: // Status 1 might indicate an active or confirmed status
           return "#bbcbf2"; // Example: Blue-ish color for active/confirmed
-        case 2: // Status 2 might indicate a completed status
+        case 3: // Status 2 might indicate a completed status
           return "#b2f2bb"; // Example: Green-ish color for completed
         default: // Default color for unknown or null status
           return "#d3d3d3"; // Grey color for unknown status
@@ -421,7 +426,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              background:"#fff",
+              background: "#fff",
               width: "80%",
             }}
           >
@@ -476,8 +481,17 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "10px",
               }}
             >
-              {user === "eventmanger" && (
-                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleEventAssign}>Assign</button>
+              {user === "eventmanger" && event.event_status === 1 && (
+                <button
+                  style={{
+                    height: "35px",
+                    fontSize: "15px",
+                    padding: "0 20px",
+                  }}
+                  onClick={handleEventAssign}
+                >
+                  Assign
+                </button>
               )}
             </div>
           </div>
@@ -493,7 +507,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               flexDirection: "column",
               justifyContent: "center",
               alignContent: "space-between",
-              background:"#fff",
+              background: "#fff",
               width: "100%",
             }}
           >
@@ -562,8 +576,17 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             <div
               style={{ display: "flex", justifyContent: "end", margin: "10px" }}
             >
-              {user === "eventmanger" && (
-                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleGuestAssign}>Assign</button>
+              {user === "eventmanger" && GuestData.guest_status === 1 && (
+                <button
+                  style={{
+                    height: "35px",
+                    fontSize: "15px",
+                    padding: "0 20px",
+                  }}
+                  onClick={handleGuestAssign}
+                >
+                  Assign
+                </button>
               )}
             </div>
           </div>
@@ -578,7 +601,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
-              background:"#fff",
+              background: "#fff",
             }}
           >
             <h3
@@ -644,9 +667,19 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "10px",
               }}
             >
-              {user === "eventmanger" && (
-                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleGuestAccomodationAssign}>Assign</button>
-              )}
+              {user === "eventmanger" &&
+                GuestData.accommodation_status === 1 && (
+                  <button
+                    style={{
+                      height: "35px",
+                      fontSize: "15px",
+                      padding: "0 20px",
+                    }}
+                    onClick={handleGuestAccomodationAssign}
+                  >
+                    Assign
+                  </button>
+                )}
             </div>
           </div>
         );
@@ -660,7 +693,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
-              background:"#fff",
+              background: "#fff",
             }}
           >
             <h3
@@ -723,8 +756,17 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             <div
               style={{ display: "flex", justifyContent: "end", margin: "10px" }}
             >
-              {user === "eventmanger" && (
-                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleGuestTransportAssign}>Assign</button>
+              {user === "eventmanger" && GuestData.transport_status === 1 && (
+                <button
+                  style={{
+                    height: "35px",
+                    fontSize: "15px",
+                    padding: "0 20px",
+                  }}
+                  onClick={handleGuestTransportAssign}
+                >
+                  Assign
+                </button>
               )}
             </div>
           </div>
@@ -736,7 +778,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
         // setSelectedItem(item.id);
         setSidePanelContent(
           <Box
-          style={{background:"#fff"}}
+            style={{ background: "#fff" }}
             sx={{
               borderRadius: "8px",
               padding: "16px",
@@ -820,8 +862,17 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginTop: "10px",
               }}
             >
-              {user === "eventmanger" && (
-                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleVenueAssign}>Assign</button>
+              {user === "eventmanger" && event.venue_status === 1 && (
+                <button
+                  style={{
+                    height: "35px",
+                    fontSize: "15px",
+                    padding: "0 20px",
+                  }}
+                  onClick={handleVenueAssign}
+                >
+                  Assign
+                </button>
               )}
             </div>
           </Box>
@@ -839,8 +890,8 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               margin: "auto",
               fontFamily: "Arial, sans-serif",
               backgroundColor: "#fff",
-              overflowY:"scroll",
-              height:"390px"
+              overflowY: "scroll",
+              height: "390px",
             }}
           >
             <h2
@@ -947,8 +998,17 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginTop: "10px",
               }}
             >
-              {user === "eventmanger" && (
-                <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleVenueRequirementsAssign}>Assign</button>
+              {user === "eventmanger" && event.requirement_status === 1 && (
+                <button
+                  style={{
+                    height: "35px",
+                    fontSize: "15px",
+                    padding: "0 20px",
+                  }}
+                  onClick={handleVenueRequirementsAssign}
+                >
+                  Assign
+                </button>
               )}
             </div>
           </div>
@@ -965,7 +1025,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
-              background:"#fff",
+              background: "#fff",
             }}
           >
             <h2
@@ -1317,7 +1377,18 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "0px",
               }}
             >
-              <button style={{height:"35px",fontSize:"15px",padding:"0 20px"}} onClick={handleParticipantsAssign}>Assign</button>
+              {user === "eventmanger" && event.participants_status === 1 && (
+                <button
+                  style={{
+                    height: "35px",
+                    fontSize: "15px",
+                    padding: "0 20px",
+                  }}
+                  onClick={handleParticipantsAssign}
+                >
+                  Assign
+                </button>
+              )}
             </div>
           </div>
         );
