@@ -174,13 +174,13 @@ const SpecialRequest = ({
 
     switch (selectedBox) {
       case "soup":
-        setSoupData({ ...tempSoupData });
+        setSoupData({ ...tempSoupData, food_request_status: 1 });
         break;
       case "car":
-        setCarData({ ...tempCarData });
+        setCarData({ ...tempCarData, car_request_status: 1 });
         break;
       case "fastfood":
-        setFastfoodData({ ...tempFastfoodData });
+        setFastfoodData({ ...tempFastfoodData, refreshment_request_status: 1 });
         break;
       default:
         break;
@@ -274,7 +274,10 @@ const SpecialRequest = ({
             <TextField
               value={tempSoupData.preferred_food || ""}
               onChange={(e) =>
-                setTempSoupData((prev) => ({ ...prev, preferred_food: e.target.value }))
+                setTempSoupData((prev) => ({
+                  ...prev,
+                  preferred_food: e.target.value,
+                }))
               }
               placeholder="Eg: Chappathi"
               fullWidth
@@ -329,7 +332,10 @@ const SpecialRequest = ({
             <TextField
               value={tempSoupData.to_venue || ""}
               onChange={(e) =>
-                setTempSoupData((prev) => ({ ...prev, to_venue: e.target.value }))
+                setTempSoupData((prev) => ({
+                  ...prev,
+                  to_venue: e.target.value,
+                }))
               }
               placeholder="Eg: BIT Guest House"
               fullWidth

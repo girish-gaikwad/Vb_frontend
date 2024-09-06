@@ -41,7 +41,7 @@ function SIDEBAR({ user }) {
           </li>
         )}
 
-        {user === "eventmanger" && (
+        {user === "eventmanager" && (
           <>
             <li>
               <NavLink

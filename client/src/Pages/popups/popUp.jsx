@@ -986,6 +986,9 @@ const GuestPopup = ({ onClose, onSave, cards, setCards }) => {
       to_place: "",
       r_from_plcae: "",
       r_to_plcae: "",
+      guest_status:0,
+      combine_accommodation_status:0,
+      combine_transport_status:0
     };
     const newCards = [...cards];
     newCards.splice(currentIndex + 1, 0, newCard);
@@ -1048,6 +1051,11 @@ const GuestPopup = ({ onClose, onSave, cards, setCards }) => {
 
   const handleSubmit = () => {
     if (validateFields()) {
+      const updatedCards = cards.map((card) => ({
+        ...card,
+        guest_status: 1, // Set guest_status to 1
+      }));
+      setCards(updatedCards);
       onSave();
       onClose();
     } else {
@@ -1209,6 +1217,10 @@ const ParticipantsPopup = ({
 
   const handleSubmit = () => {
     if (validateFields()) {
+      setParticipantsData((prevData) => ({
+        ...prevData,
+        participants_status: 1, // Update participants_status to 1 on save
+      }));
       onSave();
       onClose();
     }
@@ -1631,7 +1643,11 @@ const AccomodationPopup = ({
       );
       return;
     }
-
+    const updatedCards = cards.map((card) => ({
+      ...card,
+      combine_accommodation_status: 1, // Set guest_status to 1
+    }));
+    setCards(updatedCards);
     onSave();
     onClose();
   };
@@ -2137,6 +2153,11 @@ const TransportPopup = ({
     }
 
     if (validateFields()) {
+      const updatedCards = cards.map((card) => ({
+        ...card,
+        combine_transport_status: 1, // Set guest_status to 1
+      }));
+      setCards(updatedCards);
       onSave();
       onClose();
     } else {
@@ -2726,6 +2747,10 @@ const VenueRequirementPopup = ({
   };
 
   const handleSubmit = () => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      venue_requirement_status: 1, // Update venue_requirement_status to 1 when Confirm is clicked
+    }));
     onSave(); // Trigger the save action
     onClose(); // Close the popup
   };

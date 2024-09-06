@@ -26,7 +26,6 @@ import AssignButton from "./assignbutton";
 import { ContactPageSharp } from "@mui/icons-material";
 import { Fa500Px } from "react-icons/fa";
 import Popup from "./popup";
-import { background } from "@chakra-ui/react";
 
 const treeData = [
   {
@@ -87,6 +86,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
   // 1234
   const [event, setEvent] = useState([]);
   const [GuestData, setGuestData] = useState({});
+  const [SpecialRequestData, setSpecialRequestData] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -119,182 +119,53 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       });
   }, [event_id]);
 
-  //update functions
-  const handleEventAssign = async () => {
-    try {
-      const EventAssignResponse = await axios.put(
-        "http://localhost:8000/put/admin-event-assign",
-        {
-          status: 2,
-          event_id,
-        }
-      );
-      if (EventAssignResponse.status === 200) {
-        alert("Event Assign Status updated successfully");
-      }
-    } catch (error) {
-      console.error("Error in handleEventAssign function:", error.message);
-      alert(
-        "An error occurred while saving data. Please check the console for details."
-      );
-    }
-  };
-  const handleGuestAssign = async () => {
-    try {
-      const GuestAssignResponse = await axios.put(
-        "http://localhost:8000/put/admin-guest-assign",
-        {
-          status: 2,
-          event_id,
-        }
-      );
-      if (GuestAssignResponse.status === 200) {
-        alert("Guest Assign Status updated successfully");
-      }
-    } catch (error) {
-      console.error("Error in handleGuestAssign function:", error.message);
-      alert(
-        "An error occurred while saving data. Please check the console for details."
-      );
-    }
-  };
-  const handleGuestAccomodationAssign = async () => {
-    try {
-      const GuestAccomodationAssignResponse = await axios.put(
-        "http://localhost:8000/put/admin-guest-accommodation-assign",
-        {
-          status: 2,
-          event_id,
-        }
-      );
-      if (GuestAccomodationAssignResponse.status === 200) {
-        alert("Guest Accomodation Assign Status updated successfully");
-      }
-    } catch (error) {
-      console.error(
-        "Error in handleGuestAccomodationAssign function:",
-        error.message
-      );
-      alert(
-        "An error occurred while saving data. Please check the console for details."
-      );
-    }
-  };
-  const handleGuestTransportAssign = async () => {
-    try {
-      const GuestTransportAssignResponse = await axios.put(
-        "http://localhost:8000/put/admin-guest-transport-assign",
-        {
-          status: 2,
-          event_id,
-        }
-      );
-      if (GuestTransportAssignResponse.status === 200) {
-        alert("Guest Transport Assign Status updated successfully");
-      }
-    } catch (error) {
-      console.error(
-        "Error in handleGuestTransportAssign function:",
-        error.message
-      );
-      alert(
-        "An error occurred while saving data. Please check the console for details."
-      );
-    }
-  };
-  const handleParticipantsAssign = async () => {
-    try {
-      const ParticipantsAssignResponse = await axios.put(
-        "http://localhost:8000/put/admin-participants-assign",
-        {
-          status: 2,
-          event_id,
-        }
-      );
-      if (ParticipantsAssignResponse.status === 200) {
-        alert("Participants Assign Status updated successfully");
-      }
-    } catch (error) {
-      console.error(
-        "Error in handleParticipantsAssign function:",
-        error.message
-      );
-      alert(
-        "An error occurred while saving data. Please check the console for details."
-      );
-    }
-  };
-  const handleVenueAssign = async () => {
-    try {
-      const VenueAssignResponse = await axios.put(
-        "http://localhost:8000/put/admin-venue-assign",
-        {
-          status: 2,
-          event_id,
-        }
-      );
-      if (VenueAssignResponse.status === 200) {
-        alert("Venue Assign Status updated successfully");
-      }
-    } catch (error) {
-      console.error("Error in handleVenueAssign function:", error.message);
-      alert(
-        "An error occurred while saving data. Please check the console for details."
-      );
-    }
-  };
-  const handleVenueRequirementsAssign = async () => {
-    try {
-      const VenueRequirementsAssignResponse = await axios.put(
-        "http://localhost:8000/put/admin-venue-requirement-assign",
-        {
-          status: 2,
-          event_id,
-        }
-      );
-      if (VenueRequirementsAssignResponse.status === 200) {
-        alert("Venue Requirements Assign Status updated successfully");
-      }
-    } catch (error) {
-      console.error(
-        "Error in handleVenueRequirementsAssign function:",
-        error.message
-      );
-      alert(
-        "An error occurred while saving data. Please check the console for details."
-      );
-    }
-  };
-
   useEffect(() => {
+    axios
+      .get(`http://localhost:8000/get/extracarfoodrefreshment/${event_id}`)
+      .then((response) => {
+        setSpecialRequestData(response.data[0]); // Set event state with the response data
+      })
+      .catch((error) => {
+        console.error("Error fetching events:", error);
+        setError("503 Failed to Get Data");
+      });
+  }, [event_id]);
+
+  // if ( event > 0) {
+  useEffect(() => {
+    console.log("car");
     const getStatusColor = (status) => {
       switch (status) {
+        case 0: // Status 0 might indicate a pending or inactive status
+          return "#d3d3d3"; // Example: Red-ish color for pending/inactive
         case 1: // Status 0 might indicate a pending or inactive status
           return "#f2bbcb"; // Example: Red-ish color for pending/inactive
         case 2: // Status 1 might indicate an active or confirmed status
           return "#bbcbf2"; // Example: Blue-ish color for active/confirmed
         case 3: // Status 2 might indicate a completed status
           return "#b2f2bb"; // Example: Green-ish color for completed
-        default: // Default color for unknown or null status
-          return "#d3d3d3"; // Grey color for unknown status
+        // default: // Default color for unknown or null status
+        //   return "#d3d3d3"; // Grey color for unknown status
       }
     };
 
-    setColorMap({
-      Event: getStatusColor(event.event_status), // Conditionally set based on event_status
-      Venue: getStatusColor(event.venue_status), // Conditionally set based on venue_status
-      Venue_Requirements: getStatusColor(event.requirement_status), // Conditionally set based on requirement_status
-      Participants: getStatusColor(event.participants_status), // Conditionally set based on participants_status
+    setTimeout(() => {
+      setColorMap({
+        Event: getStatusColor(event.event_status), // Conditionally set based on event_status
+        Venue: getStatusColor(event.venue_status), // Conditionally set based on venue_status
+        Venue_Requirements: getStatusColor(event.requirement_status), // Conditionally set based on requirement_status
+        Participants: getStatusColor(event.participants_status), // Conditionally set based on participants_status
 
-      // Guest: getStatusColor(event.event_status),
-      // Accomodation: getStatusColor(event.event_status),
-      // Transport: getStatusColor(event.event_status) // Conditionally set based on guest_status
+        // Guest: getStatusColor(event.event_status),
+        // Accomodation: getStatusColor(event.event_status),
+        // Transport: getStatusColor(event.event_status) // Conditionally set based on guest_status
 
-      Guest: getStatusColor(GuestData.guest_status), // Conditionally set based on guest_status
-      Accomodation: getStatusColor(GuestData.accommodation_status), // Conditionally set based on guest_status
-      Transport: getStatusColor(GuestData.transport_status), // Conditionally set based on guest_status
-    });
-  }, [event, GuestData]); // Dependencies: Only re-run if `event` or `GuestData` changes
+        Guest: getStatusColor(GuestData[0].guest_status), // Conditionally set based on guest_status
+        Accomodation: getStatusColor(GuestData[0].accommodation_status), // Conditionally set based on guest_status
+        Transport: getStatusColor(GuestData[0].transport_status), // Conditionally set based on guest_status
+      });
+    }, 1500);
+  }, [event, GuestData]); // Dependencies: Only re-run if event or GuestData changes
 
   // console.log(event)
   if (error) {
@@ -426,7 +297,6 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              background: "#fff",
               width: "80%",
             }}
           >
@@ -481,17 +351,14 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "10px",
               }}
             >
-              {user === "eventmanger" && event.event_status === 1 && (
-                <button
-                  style={{
-                    height: "35px",
-                    fontSize: "15px",
-                    padding: "0 20px",
-                  }}
-                  onClick={handleEventAssign}
-                >
-                  Assign
-                </button>
+              {user === "eventmanager" && event.event_status === 1 && (
+                <AssignButton
+                  event_id={event_id}
+                  key={item.id}
+                  adminasign={adminasign}
+                  item={item.id}
+                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
+                />
               )}
             </div>
           </div>
@@ -507,7 +374,6 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               flexDirection: "column",
               justifyContent: "center",
               alignContent: "space-between",
-              background: "#fff",
               width: "100%",
             }}
           >
@@ -555,9 +421,16 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
 
                       <div
                         className="servervalues"
-                        style={{ margin: 0, padding: 0 }}
+                        style={{
+                          margin: 0,
+                          padding: 0,
+                          color: "#4b91f1",
+                          fontSize: "16px",
+                        }}
                       >
-                        &nbsp; <IoMdCall /> &nbsp; {guest.phone_number}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <IoMdCall />
+                        &nbsp;{guest.phone_number}
                       </div>
                     </div>
                   ))}
@@ -576,17 +449,14 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             <div
               style={{ display: "flex", justifyContent: "end", margin: "10px" }}
             >
-              {user === "eventmanger" && GuestData.guest_status === 1 && (
-                <button
-                  style={{
-                    height: "35px",
-                    fontSize: "15px",
-                    padding: "0 20px",
-                  }}
-                  onClick={handleGuestAssign}
-                >
-                  Assign
-                </button>
+              {user === "eventmanager" && GuestData[0].guest_status === 1 && (
+                <AssignButton
+                  event_id={event_id}
+                  key={item.id}
+                  adminasign={adminasign}
+                  item={item.id}
+                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
+                />
               )}
             </div>
           </div>
@@ -601,7 +471,9 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
-              background: "#fff",
+              height: "430px",
+              width: "100%",
+              overflowY: "scroll",
             }}
           >
             <h3
@@ -617,15 +489,15 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
 
             {GuestData.length > 0 ? (
               GuestData.map((accommodation, index) => (
-                <div key={index} style={{ paddingTop: "15px" }}>
+                <div key={index} style={{ paddingTop: "10px" }}>
                   <p style={{ padding: 0, margin: 0 }}>
-                    &#x2022; {index + 1}.{" "}
+                    &#x2022; {index + 1}. {accommodation.salutation}{" "}
                     {/* {accommodation.is_alone === 1 ? "Alone" : "Not Alone"}{" "}  */}
                     {accommodation.first_name} {accommodation.last_name}
                   </p>
 
                   <div className="servervalues">
-                    🔹&nbsp; car {accommodation.accommodation_venue}
+                    🔹&nbsp;{accommodation.accommodation_venue}
                   </div>
 
                   <div className="servervalues">
@@ -638,11 +510,11 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                   <div className="servervalues" style={{ fontSize: "14px" }}>
                     &nbsp; &nbsp;{" "}
                     {new Date(
-                      accommodation.accommodation_arrival
+                      accommodation.accommodation_arrival_at
                     ).toLocaleDateString()}{" "}
                     to{" "}
                     {new Date(
-                      accommodation.accommodation_departure
+                      accommodation.accommodation_departure_at
                     ).toLocaleDateString()}
                   </div>
                 </div>
@@ -667,18 +539,15 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "10px",
               }}
             >
-              {user === "eventmanger" &&
-                GuestData.accommodation_status === 1 && (
-                  <button
-                    style={{
-                      height: "35px",
-                      fontSize: "15px",
-                      padding: "0 20px",
-                    }}
-                    onClick={handleGuestAccomodationAssign}
-                  >
-                    Assign
-                  </button>
+              {user === "eventmanager" &&
+                GuestData[0].accommodation_status === 1 && (
+                  <AssignButton
+                    event_id={event_id}
+                    key={item.id}
+                    adminasign={adminasign}
+                    item={item.id}
+                    isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
+                  />
                 )}
             </div>
           </div>
@@ -693,7 +562,9 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
-              background: "#fff",
+              height: "430px",
+              width: "auto",
+              overflow: "scroll",
             }}
           >
             <h3
@@ -719,9 +590,9 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                   <img
                     src={
                       transport.transport_is_alone === 0
-                        ? "/img/combained.png"
+                        ? "/images/combained.png"
                         : transport.transport_is_alone === 1
-                        ? "/img/alone.png"
+                        ? "/images/alone.png"
                         : "/img/no-alone.png"
                     }
                     alt=""
@@ -729,18 +600,21 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {transport.from_place || "- "}&nbsp;&nbsp;
-                  <img src="/img/arrowT.png" alt="" />{" "}
+                  <img src="/images/arrowT.png" alt="" />
                   {transport.to_place || "-"}
                 </div>
-                &nbsp; &nbsp; &nbsp;
-                <span style={{ color: "#2782DD", fontWeight: "600" }}>
-                  Date
-                </span>{" "}
                 <div style={{ fontSize: "14px" }}>
-                  &nbsp; &nbsp; &nbsp;{" "}
-                  {new Date(transport.transport_arrival).toLocaleDateString()}{" "}
+                  <span style={{ color: "#2782DD", fontWeight: "600" }}>
+                    Date :
+                  </span>
+                  &nbsp;&nbsp;&nbsp;
+                  {new Date(
+                    transport.transport_arrival_at
+                  ).toLocaleDateString()}{" "}
                   <span style={{ color: "#2782DD" }}>to</span>{" "}
-                  {new Date(transport.transport_departure).toLocaleDateString()}
+                  {new Date(
+                    transport.transport_arrival_at
+                  ).toLocaleDateString()}
                 </div>
               </div>
             ))}
@@ -756,29 +630,26 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             <div
               style={{ display: "flex", justifyContent: "end", margin: "10px" }}
             >
-              {user === "eventmanger" && GuestData.transport_status === 1 && (
-                <button
-                  style={{
-                    height: "35px",
-                    fontSize: "15px",
-                    padding: "0 20px",
-                  }}
-                  onClick={handleGuestTransportAssign}
-                >
-                  Assign
-                </button>
-              )}
+              {user === "eventmanager" &&
+                GuestData[0].transport_status === 1 && (
+                  <AssignButton
+                    event_id={event_id}
+                    key={item.id}
+                    adminasign={adminasign}
+                    item={item.id}
+                    isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
+                  />
+                )}
             </div>
           </div>
         );
         setIsSidePanelOpen(true);
       }
       if (item.id === "Venue") {
-        console.log("iam from venue", item.id);
+        // console.log("iam from venue", item.id);
         // setSelectedItem(item.id);
         setSidePanelContent(
           <Box
-            style={{ background: "#fff" }}
             sx={{
               borderRadius: "8px",
               padding: "16px",
@@ -828,7 +699,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <img
-                  src="/img/calender.png"
+                  src="/images/calender.png"
                   alt="Calendar"
                   style={{ width: "20px", height: "20px", marginRight: "5px" }}
                 />
@@ -862,17 +733,14 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginTop: "10px",
               }}
             >
-              {user === "eventmanger" && event.venue_status === 1 && (
-                <button
-                  style={{
-                    height: "35px",
-                    fontSize: "15px",
-                    padding: "0 20px",
-                  }}
-                  onClick={handleVenueAssign}
-                >
-                  Assign
-                </button>
+              {user === "eventmanager" && event.venue_status === 1 && (
+                <AssignButton
+                  event_id={event_id}
+                  key={item.id}
+                  adminasign={adminasign}
+                  item={item.id}
+                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
+                />
               )}
             </div>
           </Box>
@@ -890,8 +758,6 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               margin: "auto",
               fontFamily: "Arial, sans-serif",
               backgroundColor: "#fff",
-              overflowY: "scroll",
-              height: "390px",
             }}
           >
             <h2
@@ -972,7 +838,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 }}
               >
                 <img
-                  src="/img/calender.png"
+                  src="/images/calender.png"
                   alt="Calendar"
                   style={{ width: "20px", height: "20px", marginRight: "5px" }}
                 />
@@ -998,17 +864,14 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginTop: "10px",
               }}
             >
-              {user === "eventmanger" && event.requirement_status === 1 && (
-                <button
-                  style={{
-                    height: "35px",
-                    fontSize: "15px",
-                    padding: "0 20px",
-                  }}
-                  onClick={handleVenueRequirementsAssign}
-                >
-                  Assign
-                </button>
+              {user === "eventmanager" && event.requirement_status === 1 && (
+                <AssignButton
+                  event_id={event_id}
+                  key={item.id}
+                  adminasign={adminasign}
+                  item={item.id}
+                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
+                />
               )}
             </div>
           </div>
@@ -1025,7 +888,6 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-around",
-              background: "#fff",
             }}
           >
             <h2
@@ -1093,7 +955,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/img/boys.png"
+                      src="/images/boys.png"
                       alt="Boy"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1120,7 +982,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/img/girls.png"
+                      src="/images/girls.png"
                       alt="Girl"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1155,7 +1017,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/img/male.png"
+                      src="/images/male.png"
                       alt="Male Faculty"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1184,7 +1046,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/img/female.png"
+                      src="/images/female.png"
                       alt="Female Faculty"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1249,7 +1111,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/img/boys.png"
+                      src="/images/boys.png"
                       alt="Boy"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1276,7 +1138,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/img/girls.png"
+                      src="/images/girls.png"
                       alt="Girl"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1311,7 +1173,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/img/male.png"
+                      src="/images/male.png"
                       alt="Male Faculty"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1339,7 +1201,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                     }}
                   >
                     <img
-                      src="/img/female.png"
+                      src="/images/female.png"
                       alt="Female Faculty"
                       style={{ width: "24px", height: "24px" }}
                     />
@@ -1377,17 +1239,14 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
                 marginBottom: "0px",
               }}
             >
-              {user === "eventmanger" && event.participants_status === 1 && (
-                <button
-                  style={{
-                    height: "35px",
-                    fontSize: "15px",
-                    padding: "0 20px",
-                  }}
-                  onClick={handleParticipantsAssign}
-                >
-                  Assign
-                </button>
+              {user === "eventmanager" && event.participants_status === 1 && (
+                <AssignButton
+                  event_id={event_id}
+                  key={item.id}
+                  adminasign={adminasign}
+                  item={item.id}
+                  isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
+                />
               )}
             </div>
           </div>
@@ -1398,7 +1257,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       // if (item.id === "Venue") {
       // setrecontent(<>car</>)
       setSelectedItem(item);
-      console.log("car", selectedItem);
+      // console.log("car", selectedItem);
 
       setrepopup(true);
       // }
@@ -1429,7 +1288,10 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             <p style={{ marginBottom: "10px", paddingLeft: "6%" }}>
               special requests
             </p>
-            <SpecialRequest />
+            <SpecialRequest
+              event_id={event_id}
+              SpecialRequestData={SpecialRequestData}
+            />
           </div>
         </div>
 
@@ -1502,7 +1364,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
       </div>
 
       <div className="confirmsubmit">
-        {user === "eventmanger" ? (
+        {user === "eventmanager" ? (
           <Link to={"/"}>
             <button type="button">Go Back</button>
           </Link>

@@ -27,15 +27,9 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { addDays } from "date-fns"; // Importing addDays to calculate the minimum date
+import AssignButton from "./assignbutton";
 
-const SpecialRequest = ({
-  soupData,
-  setSoupData,
-  carData,
-  setCarData,
-  fastfoodData,
-  setFastfoodData,
-}) => {
+const SpecialRequest = ({ event_id, SpecialRequestData }) => {
   const [open, setOpen] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
   const [barColors, setBarColors] = useState({
@@ -45,7 +39,6 @@ const SpecialRequest = ({
     add: "#ff6f61",
   });
 
-
   // Handle opening the dialog
   const handleClickOpen = (box) => {
     setSelectedBox(box);
@@ -54,13 +47,13 @@ const SpecialRequest = ({
     //  Initialize temporary state based on selected box
     switch (box) {
       case "soup":
-        setTempSoupData({ ...soupData });
+        // setTempSoupData({ ...soupData });
         break;
       case "car":
-        setTempCarData({ ...carData });
+        // setTempCarData({ ...carData });
         break;
       case "fastfood":
-        setTempFastfoodData({ ...fastfoodData });
+        // setTempFastfoodData({ ...fastfoodData });
         break;
       default:
         break;
@@ -73,126 +66,6 @@ const SpecialRequest = ({
     // setSelectedBox(null);
   };
 
- 
-
-
-
-  // const handleSubmit = () => {
-  //   let isValid = false;
-
-  //   switch (selectedBox) {
-  //     case "soup":
-  //       isValid = validateSoupData();
-  //       break;
-  //     case "car":
-  //       isValid = validateCarData();
-  //       break;
-  //     case "fastfood":
-  //       isValid = validateFastfoodData();
-  //       break;
-  //     default:
-  //       isValid = true;
-  //   }
-
-  //   if (!isValid) {
-  //     return; // Prevent closing the dialog and updating the state if validation fails
-  //   }
-
-  //   switch (selectedBox) {
-  //     case "soup":
-  //       setSoupData({ ...tempSoupData });
-  //       break;
-  //     case "car":
-  //       setCarData({ ...tempCarData });
-  //       break;
-  //     case "fastfood":
-  //       setFastfoodData({ ...tempFastfoodData });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-
-  //   console.log([selectedBox]);
-  //   setBarColors((prev) => ({
-  //     ...prev,
-  //     [selectedBox]: "#03a9f4", // Change the color to blue
-  //   }));
-  //   handleClose();
-  // };
-
-  // Handle slider change
-  // const handleSliderChange = (event, newValue) => {
-  //   switch (selectedBox) {
-  //     case "soup":
-  //       setTempSoupData((prev) => ({ ...prev, quantity: newValue }));
-  //       break;
-  //     case "car":
-  //       setTempCarData((prev) => ({ ...prev, quantity: newValue }));
-  //       break;
-  //     case "fastfood":
-  //       setTempFastfoodData((prev) => ({ ...prev, quantity: newValue }));
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  // Handle increment and decrement
-
-  // const handleAdd = () => {
-  //   switch (selectedBox) {
-  //     case "soup":
-  //       setTempSoupData((prev) => ({
-  //         ...prev,
-  //         quantity: Math.min(prev.quantity + 1, 100),
-  //       }));
-  //       break;
-  //     case "car":
-  //       setTempCarData((prev) => ({
-  //         ...prev,
-  //         quantity: Math.min(prev.quantity + 1, 100),
-  //       }));
-  //       break;
-  //     case "fastfood":
-  //       setTempFastfoodData((prev) => ({
-  //         ...prev,
-  //         quantity: Math.min(prev.quantity + 1, 100),
-  //       }));
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  // const handleRemove = () => {
-  //   switch (selectedBox) {
-  //     case "soup":
-  //       setTempSoupData((prev) => ({
-  //         ...prev,
-  //         quantity: Math.max(prev.quantity - 1, 0),
-  //       }));
-  //       break;
-  //     case "car":
-  //       setTempCarData((prev) => ({
-  //         ...prev,
-  //         quantity: Math.max(prev.quantity - 1, 0),
-  //       }));
-  //       break;
-  //     case "fastfood":
-  //       setTempFastfoodData((prev) => ({
-  //         ...prev,
-  //         quantity: Math.max(prev.quantity - 1, 0),
-  //       }));
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  // console.log(fastfoodData);
-  // Render dialog content based on the selected box
-
-
   const getDialogContent = () => {
     switch (selectedBox) {
       case "soup":
@@ -202,7 +75,7 @@ const SpecialRequest = ({
               Preferred food
             </Typography>
             <TextField
-            disabled
+              disabled
               // value={tempSoupData.food || "chapathi"}
               value={"chapathi"}
               onChange={(e) =>
@@ -224,7 +97,7 @@ const SpecialRequest = ({
               Time
             </Typography>
             <input
-            disabled
+              disabled
               placeholder="Select Date and Time"
               style={{
                 width: "90%",
@@ -233,7 +106,7 @@ const SpecialRequest = ({
                 fontSize: "15px",
                 color: "#9CA3AF",
                 borderRadius: "5px",
-                marginBottom:  "16px",
+                marginBottom: "16px",
               }}
               type="datetime-local"
               id="end_at"
@@ -250,7 +123,7 @@ const SpecialRequest = ({
               Venue to give
             </Typography>
             <TextField
-            disabled
+              disabled
               // value={tempSoupData.venue || ""}
               value={"mess"}
               // onChange={(e) =>
@@ -280,7 +153,7 @@ const SpecialRequest = ({
               }}
             >
               <Slider
-              disabled
+                disabled
                 // value={tempSoupData.quantity || 0}
                 value={88}
                 // onChange={handleSliderChange}
@@ -290,8 +163,9 @@ const SpecialRequest = ({
                 valueLabelDisplay="auto"
                 sx={{ marginRight: 2 }}
               />
-              <div className="spbuttonsicon" 
-              // onClick={handleRemove}
+              <div
+                className="spbuttonsicon"
+                // onClick={handleRemove}
               >
                 <RemoveIcon />
               </div>
@@ -303,11 +177,11 @@ const SpecialRequest = ({
                 InputProps={{
                   readOnly: true,
                 }}
-                
               />
-              <div className="spbuttonsicon" 
-              //  onClick={handleAdd}
-               >
+              <div
+                className="spbuttonsicon"
+                //  onClick={handleAdd}
+              >
                 <AddIcon />
               </div>
             </Box>
@@ -338,14 +212,15 @@ const SpecialRequest = ({
                 valueLabelDisplay="auto"
                 sx={{ marginRight: 2 }} // Added space between slider and buttons
               />
-              <div className="spbuttonsicon" 
-              // onClick={handleRemove}
+              <div
+                className="spbuttonsicon"
+                // onClick={handleRemove}
               >
                 <RemoveIcon />
               </div>
               <TextField
                 // value={tempCarData.quantity || 0}
-               disabled
+                disabled
                 value={88}
                 size="small"
                 sx={{ width: 90, marginRight: 1, marginLeft: 1 }}
@@ -353,8 +228,9 @@ const SpecialRequest = ({
                   readOnly: true,
                 }}
               />
-              <div className="spbuttonsicon" 
-              // onClick={handleAdd}
+              <div
+                className="spbuttonsicon"
+                // onClick={handleAdd}
               >
                 <AddIcon />
               </div>
@@ -365,7 +241,7 @@ const SpecialRequest = ({
             </Typography>
 
             <input
-            disabled
+              disabled
               placeholder="Select Date and Time"
               style={{
                 width: "90%",
@@ -387,7 +263,6 @@ const SpecialRequest = ({
               //   }))
               // }
             />
-
 
             <Typography variant="h6" sx={{ marginBottom: 1 }}>
               Departure
@@ -417,14 +292,13 @@ const SpecialRequest = ({
               // }
               // min={minDate}
             />
-            
 
             <Typography variant="h6" sx={{ marginBottom: 1 }}>
               Vehicle Type
             </Typography>
             <FormControl fullWidth>
               <Select
-              disabled
+                disabled
                 labelId="car-select-label"
                 // value={tempCarData.vehicleType || ""}
                 value={"BMW"}
@@ -446,7 +320,6 @@ const SpecialRequest = ({
                 <MenuItem value="Mercedes">Mercedes</MenuItem>
               </Select>
             </FormControl>
-
           </>
         );
       case "fastfood":
@@ -456,9 +329,9 @@ const SpecialRequest = ({
               Preferred Refreshment
             </Typography>
             <TextField
-            disabled
+              disabled
               // value={tempFastfoodData.refreshment || ""}
-              value={ "maggie"}
+              value={"maggie"}
               // onChange={(e) =>
               //   setTempFastfoodData((prev) => ({
               //     ...prev,
@@ -481,7 +354,7 @@ const SpecialRequest = ({
               Time
             </Typography>
             <input
-            disabled
+              disabled
               placeholder="Select Date and Time"
               style={{
                 width: "90%",
@@ -508,7 +381,6 @@ const SpecialRequest = ({
               Venue to give
             </Typography>
             <TextField
-              
               disabled
               // value={tempFastfoodData.venue || ""}
               value={"BIT GUEST HOUSE"}
@@ -528,7 +400,6 @@ const SpecialRequest = ({
                 ),
               }}
             />
-           
 
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
               Quantity
@@ -552,13 +423,14 @@ const SpecialRequest = ({
                 valueLabelDisplay="auto"
                 sx={{ marginRight: 2 }} // Added space between slider and buttons
               />
-              <div className="spbuttonsicon" 
-              // onClick={handleRemove}
+              <div
+                className="spbuttonsicon"
+                // onClick={handleRemove}
               >
                 <RemoveIcon />
               </div>
               <TextField
-              disabled
+                disabled
                 // value={tempFastfoodData.quantity}
                 value={65}
                 size="small"
@@ -568,9 +440,10 @@ const SpecialRequest = ({
                 }}
               />
 
-              <div className="spbuttonsicon"
-              //  onClick={handleAdd}
-               >
+              <div
+                className="spbuttonsicon"
+                //  onClick={handleAdd}
+              >
                 <AddIcon />
               </div>
             </Box>
@@ -638,14 +511,28 @@ const SpecialRequest = ({
       >
         <DialogContent>{getDialogContent()}</DialogContent>
         <DialogActions>
-          <div onClick={handleClose} className="spbuttons">
-            ok
+          <AssignButton
+          // event_id={event_id}
+          // key={item.id}
+          // adminasign={adminasign}
+          // item={item.id}
+          // isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
+          />
+
+          <div
+            onClick={handleClose}
+            style={{
+              background: "#1b75d5",
+              color: "white",
+              borderRadius: "6px",
+              padding: "5px",
+              textAlign: "center",
+              width: "80px",
+              marginBottom: "20px",
+            }}
+          >
+            Close
           </div>
-
-
-          {/* <div onClick={handleSubmit} className="spbuttons">
-            Confirm
-          </div> */}
         </DialogActions>
       </Dialog>
     </div>

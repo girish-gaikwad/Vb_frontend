@@ -1,45 +1,57 @@
-const Event = require("../models/EventGet");
+const {
+  GetEventDatas,
+  EventParticipantsVenueRequirementDetails,
+  GuestAccommodationTransportDetails,
+  EventCarFoodRefreshmentDetails,
+  EventDetailstoAdmin,
+} = require("../models/EventGet");
 
-exports.getEventdata = (req, res) => {
-  Event.getEventdata()
-    .then((events) => {
-      res.json(events);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message || "Internal Server Error" });
-    });
+exports.GetEventDatas = async (req, res) => {
+  try {
+    const events = await GetEventDatas.select();
+    res.json(events);
+  } catch (err) {
+    res.status(500).json({ error: err.message || "Internal Server Error" });
+  }
 };
 
-exports.EventParticipantsVenueRequirementDetails = (req, res) => {
+exports.EventParticipantsVenueRequirementDetails = async (req, res) => {
   const eventId = req.params.id;
-
-  Event.EventParticipantsVenueRequirementDetails(eventId)
-    .then((eventsData) => {
-      res.json(eventsData);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message || "Internal Server Error" });
-    });
+  try {
+    const eventsData = await EventParticipantsVenueRequirementDetails.select(
+      eventId
+    );
+    res.json(eventsData);
+  } catch (err) {
+    res.status(500).json({ error: err.message || "Internal Server Error" });
+  }
 };
 
-exports.GuestAccommodationTransportDetails = (req, res) => {
+exports.GuestAccommodationTransportDetails = async (req, res) => {
   const eventId = req.params.id;
-
-  Event.GuestAccommodationTransportDetails(eventId)
-    .then((guestsData) => {
-      res.json(guestsData); // Send the array of objects as JSON
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message || "Internal Server Error" });
-    });
+  try {
+    const guestsData = await GuestAccommodationTransportDetails.select(eventId);
+    res.json(guestsData);
+  } catch (err) {
+    res.status(500).json({ error: err.message || "Internal Server Error" });
+  }
 };
 
-exports.EventDetailstoAdmin = (req, res) => {
-  Event.EventDetailstoAdmin()
-    .then((EventDetailstoAdmin) => {
-      res.json(EventDetailstoAdmin);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message || "Internal Server Error" });
-    });
+exports.EventCarFoodRefreshmentDetails = async (req, res) => {
+  const eventId = req.params.id;
+  try {
+    const extraData = await EventCarFoodRefreshmentDetails.select(eventId);
+    res.json(extraData);
+  } catch (err) {
+    res.status(500).json({ error: err.message || "Internal Server Error" });
+  }
+};
+
+exports.EventDetailstoAdmin = async (req, res) => {
+  try {
+    const adminDetails = await EventDetailstoAdmin.select();
+    res.json(adminDetails);
+  } catch (err) {
+    res.status(500).json({ error: err.message || "Internal Server Error" });
+  }
 };

@@ -118,7 +118,9 @@ const TreeStructure = () => {
       to_place: "",
       r_from_plcae: "",
       r_to_plcae: "",
-      guest_status:1,
+      guest_status:0,
+      combine_accommodation_status:0,
+      combine_transport_status:0,
     },
   ]);
 
@@ -135,7 +137,7 @@ const TreeStructure = () => {
     acc_girls_count: 0,
     acc_male_faculty_count: 0,
     acc_female_faculty_count: 0,
-    participants_status:1,
+    participants_status:0,
   });
 
   const [groups, setGroups] = useState([]);
@@ -178,7 +180,7 @@ const TreeStructure = () => {
     scribbling_pad_count: 0,
     water_bottle_count: 0,
     others: 0,
-    venue_requirement_status:1,
+    venue_requirement_status:0,
   });
 
   const [Tgroups, TsetGroups] = useState([]);
@@ -192,7 +194,7 @@ const TreeStructure = () => {
     time: "",
     food_quantity: 0,
     to_venue: "",
-    food_request_status:1,
+    food_request_status:0,
   });
   const [carData, setCarData] = useState({
     event_id: "",
@@ -200,7 +202,7 @@ const TreeStructure = () => {
     arrival_at: "",
     depature_at: "",
     car_type: "",
-    car_request_status:1,
+    car_request_status:0,
   });
   const [fastfoodData, setFastfoodData] = useState({
     event_id: "",
@@ -208,8 +210,11 @@ const TreeStructure = () => {
     time: "",
     to_venue: "",
     quantity: 0,
-    refreshment_request_status:1,
+    refreshment_request_status:0,
   });
+
+  console.log(cards) ;
+  
 
   const confirm = async () => {
     try {
@@ -290,7 +295,7 @@ const TreeStructure = () => {
               arrival_at: formatDateTime(cards[firstGuestIndex].arrival_at), // Formatting arrival_at
               departure_at: formatDateTime(cards[firstGuestIndex].departure_at), // Formatting departure_at
               accommodation_venue: cards[firstGuestIndex].accommodation_venue, // Adding accommodation_venue
-              combine_accommodation_status:1,
+              combine_accommodation_status:cards[firstGuestIndex].combine_accommodation_status,
             },
             {
               event_id: "",
@@ -302,7 +307,7 @@ const TreeStructure = () => {
                 cards[secondGuestIndex].departure_at
               ), // Formatting departure_at
               accommodation_venue: cards[secondGuestIndex].accommodation_venue, // Adding accommodation_venue
-              combine_accommodation_status:1,
+              combine_accommodation_status:cards[secondGuestIndex].combine_accommodation_status,
             }
           );
         } else {
@@ -316,7 +321,7 @@ const TreeStructure = () => {
             arrival_at: formatDateTime(cards[guestIndex].arrival_at), // Formatting arrival_at
             departure_at: formatDateTime(cards[guestIndex].departure_at), // Formatting departure_at
             accommodation_venue: cards[guestIndex].accommodation_venue, // Adding accommodation_venue
-            combine_accommodation_status:1,
+            combine_accommodation_status:cards[guestIndex].combine_accommodation_status,
           });
         }
       });
@@ -369,7 +374,7 @@ const TreeStructure = () => {
                 to_place: cards[firstGuestIndex].to_place,
                 r_from_place: cards[firstGuestIndex].r_from_plcae,
                 r_to_place: cards[firstGuestIndex].r_to_plcae,
-                combine_transport_status:1,
+                combine_transport_status:cards[firstGuestIndex].combine_transport_status,
               },
               {
                 event_id: "",
@@ -389,7 +394,7 @@ const TreeStructure = () => {
                 to_place: cards[secondGuestIndex].to_place,
                 r_from_place: cards[secondGuestIndex].r_from_plcae,
                 r_to_place: cards[secondGuestIndex].r_to_plcae,
-                combine_transport_status:1,
+                combine_transport_status:cards[secondGuestIndex].combine_transport_status,
               },
               {
                 event_id: "",
@@ -409,7 +414,7 @@ const TreeStructure = () => {
                 to_place: cards[thirdGuestIndex].to_place,
                 r_from_place: cards[thirdGuestIndex].r_from_plcae,
                 r_to_place: cards[thirdGuestIndex].r_to_plcae,
-                combine_transport_status:1,
+                combine_transport_status:cards[thirdGuestIndex].combine_transport_status,
               }
             );
           } else if (preference.length === 2) {
@@ -437,7 +442,7 @@ const TreeStructure = () => {
                 to_place: cards[firstGuestIndex].to_place,
                 r_from_place: cards[firstGuestIndex].r_from_plcae,
                 r_to_place: cards[firstGuestIndex].r_to_plcae,
-                combine_transport_status:1,
+                combine_transport_status:cards[firstGuestIndex].combine_transport_status,
               },
               {
                 event_id: "",
@@ -457,7 +462,7 @@ const TreeStructure = () => {
                 to_place: cards[secondGuestIndex].to_place,
                 r_from_place: cards[secondGuestIndex].r_from_plcae,
                 r_to_place: cards[secondGuestIndex].r_to_plcae,
-                combine_transport_status:1,
+                combine_transport_status:cards[secondGuestIndex].combine_transport_status,
               }
             );
           }
@@ -478,7 +483,7 @@ const TreeStructure = () => {
             to_place: cards[guestIndex].to_place,
             r_from_place: cards[guestIndex].r_from_plcae,
             r_to_place: cards[guestIndex].r_to_plcae,
-            combine_transport_status:1,
+            combine_transport_status:cards[guestIndex].combine_transport_status,
           });
         }
       });
@@ -592,7 +597,7 @@ const TreeStructure = () => {
       /** Final Step: Success Alert **/
       alert(`Event Created Successfully!`);
 
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       console.error("Error in confirm function:", error.message);
       alert(

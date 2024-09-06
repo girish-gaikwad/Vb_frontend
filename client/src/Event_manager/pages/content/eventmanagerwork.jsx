@@ -153,8 +153,8 @@ function EVENTMANAGERWORK({
                       />
                     </div>
                   </div>
-                  <div className="infrawork-a">
-                    <div style={{fontWeight:"600"}}>{event.faculty_name}</div>
+                  <div className="infrawork-a" style={{width:"200px",textAlign:"center",marginLeft:"10px"}}>
+                    <div style={{fontWeight:"600",marginBottom:"5px"}}>{event.faculty_name}</div>
                     <h4 style={{ color: "#718EBF", fontWeight: "500" }}>
                       {event.mobile_number}
                     </h4>

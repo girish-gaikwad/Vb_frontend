@@ -41,7 +41,7 @@ function App() {
         
       ;
 
-const user = "eventmanger";
+const user = "eventmanager";
 
   return (
     <div className="box">
@@ -69,7 +69,7 @@ const user = "eventmanger";
       <Route path="/pending" element={<EVENTMANAGERWORK approvedEvents={approvedEvents} setApprovedEvents={setApprovedEvents} dummyData={dummyData} setSelectedEvent={setSelectedEvent} />} />
             <Route path="/approved" element={<EVENTAPPROVED approvedEvents={approvedEvents} />} />
             {/* <Route path="/admin-approval/:id" element={<EventDetails selectedEvent={selectedEvent} />} />  */}
-            <Route path="/registered-event/:id" element={<EventDetailsriser selectedEvent={selectedEventriser} user={user} />} /> 
+            <Route path="/registered-event/:id" element={<EventDetailsriser user={user} />} /> 
       </Routes>
 
       </  div>
