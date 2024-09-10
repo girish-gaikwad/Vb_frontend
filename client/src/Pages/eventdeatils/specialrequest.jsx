@@ -38,6 +38,16 @@ const SpecialRequest = ({ event_id, SpecialRequestData,user }) => {
     fastfood: "#ff6f61",
     add: "#ff6f61",
   });
+
+  const handleClickOpen = (box) => {
+    setSelectedBox(box);
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+    // setSelectedBox(null);
+  };
+  
   const [disabledItems, setDisabledItems] = useState(new Set()); // Track disabled items
 
   const getDialogContent = () => {
@@ -166,7 +176,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData,user }) => {
                 isDisabled={disabledItems.has("Food_Request")} // Check if disabledItems supports .has() or use .includes() for arrays
               />)}
               <div
-                onClick={setOpen(false)}
+                onClick={handleClose}
                 style={{
                   background: "#1b75d5",
                   color: "white",
@@ -321,7 +331,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData,user }) => {
                 isDisabled={disabledItems.has("Car_Request")} // Check if disabledItems supports .has() or use .includes() for arrays
               />)}
               <div
-                onClick={setOpen(false)}
+                onClick={handleClose}
                 style={{
                   background: "#1b75d5",
                   color: "white",
@@ -462,7 +472,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData,user }) => {
                 />
               )}
               <div
-                onClick={setOpen(false)}
+                onClick={handleClose}
                 style={{
                   background: "#1b75d5",
                   color: "white",
