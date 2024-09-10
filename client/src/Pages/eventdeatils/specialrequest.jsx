@@ -29,7 +29,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { addDays } from "date-fns"; // Importing addDays to calculate the minimum date
 import AssignButton from "./assignbutton";
 
-const SpecialRequest = ({ event_id, SpecialRequestData }) => {
+const SpecialRequest = ({ event_id, SpecialRequestData,user }) => {
   const [open, setOpen] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
   const [barColors, setBarColors] = useState({
@@ -38,33 +38,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
     fastfood: "#ff6f61",
     add: "#ff6f61",
   });
-
-  // Handle opening the dialog
-  const handleClickOpen = (box) => {
-    setSelectedBox(box);
-    setOpen(true);
-
-    //  Initialize temporary state based on selected box
-    switch (box) {
-      case "soup":
-        // setTempSoupData({ ...soupData });
-        break;
-      case "car":
-        // setTempCarData({ ...carData });
-        break;
-      case "fastfood":
-        // setTempFastfoodData({ ...fastfoodData });
-        break;
-      default:
-        break;
-    }
-  };
-
-  // Handle closing the dialog
-  const handleClose = () => {
-    setOpen(false);
-    // setSelectedBox(null);
-  };
+  const [disabledItems, setDisabledItems] = useState(new Set()); // Track disabled items
 
   const getDialogContent = () => {
     switch (selectedBox) {
@@ -76,12 +50,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
             </Typography>
             <TextField
               disabled
-              // value={tempSoupData.food || "chapathi"}
-              value={"chapathi"}
-              onChange={(e) =>
-                setTempSoupData((prev) => ({ ...prev, food: e.target.value }))
-              }
-              placeholder="Eg: Chappathi"
+              value={SpecialRequestData.preferred_food || "Null"}
               fullWidth
               InputProps={{
                 endAdornment: (
@@ -98,7 +67,6 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
             </Typography>
             <input
               disabled
-              placeholder="Select Date and Time"
               style={{
                 width: "90%",
                 border: "solid 1px #9CA3AF",
@@ -106,17 +74,22 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
                 fontSize: "15px",
                 color: "#9CA3AF",
                 borderRadius: "5px",
-                marginBottom: "16px",
               }}
-              type="datetime-local"
               id="end_at"
               name="end_at"
-              // value={tempSoupData.time || ""}
-              value={" 26-08-2024 2.00pm "}
-              // onChange={(e) =>
-              //   setTempSoupData((prev) => ({ ...prev, time: e.target.value }))
-              // }
-              // min={minDate}
+              value={
+                SpecialRequestData.food_time
+                  ? `${new Date(
+                      SpecialRequestData.food_time
+                    ).toLocaleDateString("en-GB")} (${new Date(
+                      SpecialRequestData.food_time
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })})`
+                  : " - "
+              }
             />
 
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -124,12 +97,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
             </Typography>
             <TextField
               disabled
-              // value={tempSoupData.venue || ""}
-              value={"mess"}
-              // onChange={(e) =>
-              //   setTempSoupData((prev) => ({ ...prev, venue: e.target.value }))
-              // }
-              placeholder="Eg: BIT Guest House"
+              value={SpecialRequestData.food_to_venue || "Null"}
               fullWidth
               InputProps={{
                 endAdornment: (
@@ -154,9 +122,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
             >
               <Slider
                 disabled
-                // value={tempSoupData.quantity || 0}
-                value={88}
-                // onChange={handleSliderChange}
+                value={SpecialRequestData.food_quantity || 0}
                 step={1}
                 min={0}
                 max={100}
@@ -170,8 +136,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
                 <RemoveIcon />
               </div>
               <TextField
-                // value={tempSoupData.quantity}
-                value={88}
+                value={SpecialRequestData.food_quantity || " - "}
                 size="small"
                 sx={{ width: 85, marginRight: 1, marginLeft: 1 }}
                 InputProps={{
@@ -185,6 +150,35 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
                 <AddIcon />
               </div>
             </Box>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "flex-end",
+                gap: "20px",
+              }}
+            >
+              {user === "eventmanager" && SpecialRequestData.food_request_status === 1 && (
+              <AssignButton
+                event_id={event_id}
+                key={"Food_Request"} // Ensure this is a unique value
+                item={"Food_Request"} // Ensure Food_Request is a valid value
+                isDisabled={disabledItems.has("Food_Request")} // Check if disabledItems supports .has() or use .includes() for arrays
+              />)}
+              <div
+                onClick={setOpen(false)}
+                style={{
+                  background: "#1b75d5",
+                  color: "white",
+                  borderRadius: "6px",
+                  padding: "5px",
+                  textAlign: "center",
+                  width: "80px",
+                }}
+              >
+                Close
+              </div>
+            </div>
           </>
         );
       case "car":
@@ -202,14 +196,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
               }}
             >
               <Slider
-                // value={tempCarData.quantity || 0}
-                value={88}
-                // onChange={handleSliderChange}
-                step={1}
-                min={0}
-                max={100}
-                disabled
-                valueLabelDisplay="auto"
+                value={SpecialRequestData.car_count || 0}
                 sx={{ marginRight: 2 }} // Added space between slider and buttons
               />
               <div
@@ -219,9 +206,8 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
                 <RemoveIcon />
               </div>
               <TextField
-                // value={tempCarData.quantity || 0}
+                value={SpecialRequestData.car_count || " - "}
                 disabled
-                value={88}
                 size="small"
                 sx={{ width: 90, marginRight: 1, marginLeft: 1 }}
                 InputProps={{
@@ -242,7 +228,6 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
 
             <input
               disabled
-              placeholder="Select Date and Time"
               style={{
                 width: "90%",
                 border: "solid 1px #9CA3AF",
@@ -251,17 +236,21 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
                 color: "#9CA3AF",
                 borderRadius: "5px",
               }}
-              type="datetime-local"
               id="end_at"
               name="end_at"
-              // value={tempCarData.arrival || ""}
-              value={"26-07-2024 6:00pm"}
-              // onChange={(e) =>
-              //   setTempCarData((prev) => ({
-              //     ...prev,
-              //     arrival: e.target.value,
-              //   }))
-              // }
+              value={
+                SpecialRequestData.car_arrival_at
+                  ? `${new Date(
+                      SpecialRequestData.car_arrival_at
+                    ).toLocaleDateString("en-GB")} (${new Date(
+                      SpecialRequestData.car_arrival_at
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })})`
+                  : " - "
+              }
             />
 
             <Typography variant="h6" sx={{ marginBottom: 1 }}>
@@ -269,7 +258,6 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
             </Typography>
 
             <input
-              placeholder="Select Date and Time"
               disabled
               style={{
                 width: "90%",
@@ -279,47 +267,73 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
                 color: "#9CA3AF",
                 borderRadius: "5px",
               }}
-              type="datetime-local"
               id="end_at"
               name="end_at"
-              // value={tempCarData.departure || ""}
-              value={"27-08-2024 7:00am"}
-              // onChange={(e) =>
-              //   setTempCarData((prev) => ({
-              //     ...prev,
-              //     departure: e.target.value,
-              //   }))
-              // }
-              // min={minDate}
+              value={
+                SpecialRequestData.car_departure_at
+                  ? `${new Date(
+                      SpecialRequestData.car_departure_at
+                    ).toLocaleDateString("en-GB")} (${new Date(
+                      SpecialRequestData.car_departure_at
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })})`
+                  : " - "
+              }
             />
 
             <Typography variant="h6" sx={{ marginBottom: 1 }}>
               Vehicle Type
             </Typography>
             <FormControl fullWidth>
-              <Select
+              <input
                 disabled
-                labelId="car-select-label"
-                // value={tempCarData.vehicleType || ""}
-                value={"BMW"}
-                // onChange={(e) =>
-                //   setTempCarData((prev) => ({
-                //     ...prev,
-                //     vehicleType: e.target.value,
-                //   }))
-                // }
-                label="Select Car"
-                endAdornment={
-                  <InputAdornment position="end">
-                    <DirectionsCarIcon />
-                  </InputAdornment>
-                }
-              >
-                <MenuItem value="BMW">BMW</MenuItem>
-                <MenuItem value="Audi">Audi</MenuItem>
-                <MenuItem value="Mercedes">Mercedes</MenuItem>
-              </Select>
+                style={{
+                  width: "90%",
+                  border: "solid 1px #9CA3AF",
+                  padding: "20px",
+                  fontSize: "15px",
+                  color: "#9CA3AF",
+                  borderRadius: "5px",
+                }}
+                type="text"
+                id="end_at"
+                name="end_at"
+                value={SpecialRequestData.car_type || "Null"}
+              />
             </FormControl>
+            <div style={{marginTop:"25px"}}></div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "flex-end",
+                gap: "20px",
+              }}
+            >
+              {user === "eventmanager" && SpecialRequestData.car_request_status === 1 && (
+              <AssignButton
+                event_id={event_id}
+                key={"Car_Request"} // Ensure this is a unique value
+                item={"Car_Request"} // Ensure Food_Request is a valid value
+                isDisabled={disabledItems.has("Car_Request")} // Check if disabledItems supports .has() or use .includes() for arrays
+              />)}
+              <div
+                onClick={setOpen(false)}
+                style={{
+                  background: "#1b75d5",
+                  color: "white",
+                  borderRadius: "6px",
+                  padding: "5px",
+                  textAlign: "center",
+                  width: "80px",
+                }}
+              >
+                Close
+              </div>
+            </div>
           </>
         );
       case "fastfood":
@@ -330,15 +344,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
             </Typography>
             <TextField
               disabled
-              // value={tempFastfoodData.refreshment || ""}
-              value={"maggie"}
-              // onChange={(e) =>
-              //   setTempFastfoodData((prev) => ({
-              //     ...prev,
-              //     refreshment: e.target.value,
-              //   }))
-              // }
-              placeholder="Eg: Chappathi"
+              value={SpecialRequestData.refreshment_dish || "Null"}
               fullWidth
               InputProps={{
                 endAdornment: (
@@ -355,7 +361,6 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
             </Typography>
             <input
               disabled
-              placeholder="Select Date and Time"
               style={{
                 width: "90%",
                 border: "solid 1px #9CA3AF",
@@ -364,17 +369,21 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
                 color: "#9CA3AF",
                 borderRadius: "5px",
               }}
-              type="datetime-local"
               id="end_at"
               name="end_at"
-              // value={tempFastfoodData.time || ""}
-              value={"28-98-2024 8:00pm"}
-              // onChange={(e) =>
-              //   setTempFastfoodData((prev) => ({
-              //     ...prev,
-              //     time: e.target.value,
-              //   }))
-              // }
+              value={
+                SpecialRequestData.refreshment_time
+                  ? `${new Date(
+                      SpecialRequestData.refreshment_time
+                    ).toLocaleDateString("en-GB")} (${new Date(
+                      SpecialRequestData.refreshment_time
+                    ).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })})`
+                  : " - "
+              }
             />
 
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
@@ -382,15 +391,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
             </Typography>
             <TextField
               disabled
-              // value={tempFastfoodData.venue || ""}
-              value={"BIT GUEST HOUSE"}
-              // onChange={(e) =>
-              //   setTempFastfoodData((prev) => ({
-              //     ...prev,
-              //     venue: e.target.value,
-              //   }))
-              // }
-              placeholder="Eg: BIT Guest House"
+              value={SpecialRequestData.refreshment_to_venue || "Null"}
               fullWidth
               InputProps={{
                 endAdornment: (
@@ -413,10 +414,8 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
               }}
             >
               <Slider
-                // value={tempFastfoodData.quantity || 0}
-                value={60}
+                value={SpecialRequestData.refreshment_quantity || 0}
                 disabled
-                // onChange={handleSliderChange}
                 step={1}
                 min={0}
                 max={100}
@@ -431,8 +430,7 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
               </div>
               <TextField
                 disabled
-                // value={tempFastfoodData.quantity}
-                value={65}
+                value={SpecialRequestData.refreshment_quantity || " - "}
                 size="small"
                 sx={{ width: 85, marginRight: 1, marginLeft: 1 }}
                 InputProps={{
@@ -447,6 +445,36 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
                 <AddIcon />
               </div>
             </Box>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "flex-end",
+                gap: "20px",
+              }}
+            >
+              {user === "eventmanager" && SpecialRequestData.refreshment_request_status === 1 && (
+                <AssignButton
+                  event_id={event_id}
+                  key={"Refreshment_Request"} // Ensure this is a unique value
+                  item={"Refreshment_Request"} // Ensure Food_Request is a valid value
+                  isDisabled={disabledItems.has("Refreshment_Request")} // Check if disabledItems supports .has() or use .includes() for arrays
+                />
+              )}
+              <div
+                onClick={setOpen(false)}
+                style={{
+                  background: "#1b75d5",
+                  color: "white",
+                  borderRadius: "6px",
+                  padding: "5px",
+                  textAlign: "center",
+                  width: "80px",
+                }}
+              >
+                Close
+              </div>
+            </div>
           </>
         );
       case "add":
@@ -510,30 +538,6 @@ const SpecialRequest = ({ event_id, SpecialRequestData }) => {
         }}
       >
         <DialogContent>{getDialogContent()}</DialogContent>
-        <DialogActions>
-          <AssignButton
-          // event_id={event_id}
-          // key={item.id}
-          // adminasign={adminasign}
-          // item={item.id}
-          // isDisabled={disabledItems.has(item.id)} // Pass whether the button is disabled
-          />
-
-          <div
-            onClick={handleClose}
-            style={{
-              background: "#1b75d5",
-              color: "white",
-              borderRadius: "6px",
-              padding: "5px",
-              textAlign: "center",
-              width: "80px",
-              marginBottom: "20px",
-            }}
-          >
-            Close
-          </div>
-        </DialogActions>
       </Dialog>
     </div>
   );

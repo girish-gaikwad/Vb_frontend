@@ -2,8 +2,7 @@ const db = require("../config/db");
 class EventForm {
   static create(eventData) {
     return new Promise((resolve, reject) => {
-      const sql =
-        "INSERT INTO event(user_id,event_name,start_at,end_at,event_type,assigned_to,status) VALUES (?,?,?,?,?,?,?)";
+      const sql = "INSERT INTO event(user_id, event_name, start_at, end_at, event_type, assigned_to, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
       const values = [
         eventData.user_id,
         eventData.event_name,
@@ -11,10 +10,12 @@ class EventForm {
         eventData.end_at,
         eventData.event_type,
         eventData.assigned_to,
-        eventData.event_status,
+        eventData.event_status, // Default status if not provided
       ];
+
       console.log("Executing query:", sql);
       console.log("With data:", values);
+
       db.query(sql, values, (err, results) => {
         if (err) {
           console.error("Database error:", err);
@@ -25,6 +26,7 @@ class EventForm {
     });
   }
 }
+
 class GuestForm {
   static create(GuestDataArray) {
     return new Promise((resolve, reject) => {

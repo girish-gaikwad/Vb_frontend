@@ -221,6 +221,33 @@ class AdminRefreshmentRequestAssign {
     });
   }
 }
+class EventEdit {
+  static update(EventEditData) {
+    return new Promise((resolve, reject) => {
+      const sql =
+        "UPDATE event SET event_name = ?, start_at = ?, end_at = ?, event_type = ?, assigned_to = ?, status = ? WHERE id = ?";
+      const values = [
+        EventEditData.event_name,
+        EventEditData.start_at,
+        EventEditData.end_at,
+        EventEditData.event_type,
+        EventEditData.assigned_to,
+        EventEditData.status,
+        EventEditData.event_id,
+      ];
+      console.log("Executing query:", sql);
+      console.log("With data:", values);
+
+      db.query(sql, values, (err, results) => {
+        if (err) {
+          console.error("Database error:", err);
+          return reject(err);
+        }
+        resolve(results);
+      });
+    });
+  }
+}
 
 module.exports = {
   UpdateGuestCount,
@@ -234,4 +261,5 @@ module.exports = {
   AdminCarRequestAssign,
   AdminFoodRequestAssign,
   AdminRefreshmentRequestAssign,
+  EventEdit,
 };

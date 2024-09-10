@@ -10,6 +10,7 @@ import Accomodation from "../../assets/Accomodation.png";
 import Food from "../../assets/Food.png";
 import VenueRequirements from "../../assets/Venue Requirements.png";
 import { CircularProgress } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
 import myGif from "/bin-file.gif";
 import {
   EventPopup,
@@ -81,6 +82,9 @@ const TreeStructure = () => {
   const [completedItems, setCompletedItems] = useState([]);
   const navigate = useNavigate();
   const [changeborder, setborder] = useState({});
+  const [error, setError] = useState(""); // To store error messages
+  const [loading, setLoading] = useState(false); // Loading state for button
+
 
   const [formData, setFormData] = useState({
     user_id: 1,
@@ -217,6 +221,7 @@ const TreeStructure = () => {
   
 
   const confirm = async () => {
+    setLoading(true);
     try {
       const formattedStartDate = formData.start_at
         ? formData.start_at.replace("T", " ").split(".")[0]
@@ -595,14 +600,28 @@ const TreeStructure = () => {
       // console.log("Created Refreshment Request with ID:", RefreshmentData_id);
 
       /** Final Step: Success Alert **/
-      alert(`Event Created Successfully!`);
-
-      // navigate("/");
-    } catch (error) {
-      console.error("Error in confirm function:", error.message);
-      alert(
-        "An error occurred while saving data. Please check the console for details."
-      );
+      toast.success("Event created successfully!");
+      setError("");
+      setLoading(false);
+      navigate("/");
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.error) {
+        const errorData = err.response.data.error;
+  
+        // Handle object-based errors (e.g., for multiple guests)
+        if (typeof errorData === 'object') {
+          Object.values(errorData).forEach(guestErrors => {
+            Object.values(guestErrors).forEach(errorMessage => {
+              toast.error(errorMessage); // Show each individual error message
+            });
+          });
+        } else {
+          toast.error(errorData);  // Show generic error message if no specific structure
+        }
+  
+      } else {
+        toast.error("Something went wrong. Please try again later.");
+      }
     }
   };
 
@@ -772,7 +791,7 @@ const TreeStructure = () => {
           />{" "}
         </div>
       </div>
-
+      <ToastContainer />
       <div
         className="confirmsubmit"
         style={{ display: "flex", justifyContent: "end" }}
@@ -794,12 +813,13 @@ const TreeStructure = () => {
             cursor: isConfirmEnabled() ? "pointer" : "not-allowed", // Change cursor to cancel icon if not enabled
             // Removed pointerEvents to ensure cursor style is applied
           }}
+          disabled={loading}
         >
-          Confirm
+        {loading ? "Submitting..." : "Confirm"}
         </div>
 
         <div
-          style={{
+          style={{  
             padding: "8px",
             borderRadius: "5px",
             backgroundColor: "gray",

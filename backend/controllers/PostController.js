@@ -14,7 +14,18 @@ const {
 
 exports.EventForm = async (req, res) => {
   const eventData = req.body;
-  console.log("Received event data controllers:", eventData);
+  console.log("Received event data in controller:", eventData);
+
+  // Backend validation (basic example)
+  if (
+    !eventData.event_name ||
+    !eventData.start_at ||
+    !eventData.end_at ||
+    !eventData.event_type ||
+    !eventData.assigned_to
+  ) {
+    return res.status(400).json({ error: "Check Event Form and Fill it. Missing required fields!..." });
+  }
 
   try {
     const results = await EventForm.create(eventData);
@@ -50,16 +61,44 @@ exports.GuestForm = async (req, res) => {
   }
 };
 
-
 exports.ParticipantsForm = async (req, res) => {
-  const ParticipantsData = req.body;
-  console.log("Received Participant data:", ParticipantsData);
+  const participantsData = req.body;
+  console.log("Received Participant data:", participantsData);
+
+  // First, check the participants_status
+  if (participantsData.participants_status === 1) {
+    // Perform validations only if participants_status is 1
+    if (
+      !participantsData.event_id ||
+      !participantsData.invitees_id ||
+      participantsData.internal_count < 10 ||
+      participantsData.ex_boys_count < 10 ||
+      participantsData.ex_girls_count < 10
+    ) {
+      return res.status(400).json({
+        error: "Check Participants Form. Missing required fields or invalid participant counts!",
+      });
+    }
+
+    // Additional validation if accommodation is required
+    if (participantsData.accommodation_status) {
+      if (
+        participantsData.acc_boys_count < 10 ||
+        participantsData.acc_girls_count < 10
+      ) {
+        return res.status(400).json({
+          error: "Accommodation count for boys and girls cannot be less than 10!",
+        });
+      }
+    }
+  }
 
   try {
-    const results = await ParticipantsForm.create(ParticipantsData);
+    // If participants_status is 0 or all validations pass, proceed with the insertion
+    const results = await ParticipantsForm.create(participantsData);
     res.status(201).json({
       message: "Participant created successfully",
-      Participant_id: results.insertId, // Send the ID to map the two tables from backend to frontend
+      participant_id: results.insertId, // Send the ID to map the two tables from backend to frontend
     });
   } catch (err) {
     console.error("Error creating Participant:", err);
@@ -109,11 +148,35 @@ exports.CombineTransport = async (req, res) => {
 };
 
 exports.VenueRegister = async (req, res) => {
-  const VenueRegisterData = req.body;
-  console.log("Received Venue data:", VenueRegisterData);
+  const venueData = req.body;
+  console.log("Received Venue data:", venueData);
+
+  // First, check the venue_register_status
+  if (venueData.venue_register_status === 1) {
+    // Perform validations only if venue_register_status is 1
+    if (venueData.venue_count < 1) {
+      return res.status(400).json({
+        error: "Venue count must be at least 1",
+      });
+    }
+
+    const venueTypes = ["Classrooms", "Seminar Hall", "Auditorium", "Labs"];
+    if (!venueTypes.includes(venueData.venue_type)) {
+      return res.status(400).json({
+        error: "You must select a valid venue type",
+      });
+    }
+
+    if (venueData.capacity < 60) {
+      return res.status(400).json({
+        error: "Venue capacity must be at least 60",
+      });
+    }
+  }
 
   try {
-    const results = await VenueRegister.create(VenueRegisterData);
+    // If venue_register_status is 0 or all validations pass, proceed with the insertion
+    const results = await VenueRegister.create(venueData);
     res.status(201).json({
       message: "Venue created successfully",
       VenueBooking_id: results.insertId, // Send the ID to map the two tables from backend to frontend
@@ -127,12 +190,47 @@ exports.VenueRegister = async (req, res) => {
   }
 };
 
+
 exports.VenueRequirement = async (req, res) => {
-  const VenueRequirementData = req.body;
-  console.log("Received VenueRequirement data:", VenueRequirementData);
+  const venueRequirementData = req.body;
+  console.log("Received VenueRequirement data:", venueRequirementData);
+
+  // Check if venue_requirement_status is 1 to perform the validation
+  if (venueRequirementData.venue_requirement_status === 1) {
+    // Array of fields that need to be checked
+    const fieldsToCheck = [
+      "chair_count",
+      "dais_table_count",
+      "white_board_count",
+      "hand_mic_count",
+      "help_desk_count",
+      "collar_mic_count",
+      "internet_count",
+      "live_stream_count",
+      "biometric_count",
+      "photography_count",
+      "videography_count",
+      "large_momento_count",
+      "small_momento_count",
+      "shawl_count",
+      "pen_pencil_count",
+      "scribbling_pad_count",
+      "water_bottle_count",
+    ];
+
+    // Iterate through the fields and check if values are within the range 0-10
+    for (let field of fieldsToCheck) {
+      if (venueRequirementData[field] < 0 || venueRequirementData[field] > 10) {
+        return res.status(400).json({
+          error: `Venue Requirements must be between 1 and 10`,
+        });
+      }
+    }
+  }
 
   try {
-    const results = await VenueRequirement.create(VenueRequirementData);
+    // If venue_requirement_status is 0 or all validations pass, proceed with the insertion
+    const results = await VenueRequirement.create(venueRequirementData);
     res.status(201).json({
       message: "VenueRequirement created successfully",
       VenueRequirement_id: results.insertId, // Send the ID to map the two tables from backend to frontend
@@ -145,6 +243,7 @@ exports.VenueRequirement = async (req, res) => {
     });
   }
 };
+
 
 exports.invitees = async (req, res) => {
   const inviteesData = req.body;

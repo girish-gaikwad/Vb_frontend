@@ -10,6 +10,7 @@ const {
   AdminCarRequestAssign,
   AdminFoodRequestAssign,
   AdminRefreshmentRequestAssign,
+  EventEdit,
 } = require("../models/EventPut");
 
 exports.UpdateGuestCount = async (req, res) => {
@@ -304,6 +305,31 @@ exports.AdminRefreshmentRequestAssign = async (req, res) => {
     console.error("Error updating Refreshment Request Assign Status:", err);
     res.status(500).json({
       error: "Error updating Refreshment Request Assign Status",
+      details: err.message,
+    });
+  }
+};
+
+exports.EventEdit = async (req, res) => {
+  const EventEditData = req.body;
+  console.log("Received Event data:", EventEditData);
+
+  try {
+    const results = await EventEdit.update(EventEditData);
+    if (results.affectedRows > 0) {
+      res.status(200).json({
+        message: "Event Edit updated successfully",
+        affectedRows: results.affectedRows,
+      });
+    } else {
+      res.status(404).json({
+        message: "No Event Edit found with the given event_id",
+      });
+    }
+  } catch (err) {
+    console.error("Error updating Event Data:", err);
+    res.status(500).json({
+      error: "Error updating Event Data",
       details: err.message,
     });
   }

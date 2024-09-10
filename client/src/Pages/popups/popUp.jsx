@@ -133,13 +133,19 @@ const ListItem = React.memo(
             <FormControl fullWidth>
               <FormLabel>Salutation</FormLabel>
               <TextField
-                placeholder="Eg: Mr"
+                select
                 variant="outlined"
                 value={item.salutation}
                 onChange={(e) => onInputChange("salutation", e.target.value)}
                 error={!!errors.salutation} // Shows error state if there's an error
                 helperText={errors.salutation} // Displays error message
-              />
+              >
+                {" "}
+                <MenuItem value="Mr">Mr</MenuItem>
+                <MenuItem value="Miss">Miss</MenuItem>
+                <MenuItem value="Mrs">Mrs</MenuItem>
+                <MenuItem value="Dr">Dr</MenuItem>
+              </TextField>
             </FormControl>
           </Grid>
 
@@ -260,6 +266,8 @@ const ListItem = React.memo(
                 variant="outlined"
                 value={item.country_code}
                 onChange={(e) => onInputChange("country_code", e.target.value)}
+                error={!!errors.country_code}
+                helperText={errors.country_code}
               />
             </FormControl>
           </Grid>
@@ -470,9 +478,6 @@ const ListItemA = React.memo(
             <div className="cardsarrow" onClick={onPrev}>
               <IoIosArrowBack />
             </div>
-
-            {/* <Button style={{height:"35px", color:"white"}} >save</Button> */}
-
             <div className="cardsarrow" onClick={onNext}>
               <IoIosArrowForward />
             </div>
@@ -735,9 +740,6 @@ const ListItemT = React.memo(
             <div className="cardsarrow" onClick={onPrev}>
               <IoIosArrowBack />
             </div>
-
-            <Button style={{ height: "35px", color: "white" }}>save</Button>
-
             <div className="cardsarrow" onClick={onNext}>
               <IoIosArrowForward />
             </div>
@@ -950,6 +952,7 @@ const EventPopup = ({ onClose, onSave, formData, setFormData }) => {
 const GuestPopup = ({ onClose, onSave, cards, setCards }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [errors, setErrors] = useState({});
+  const [initialFormData, setInitialFormData] = useState({});
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
@@ -986,9 +989,9 @@ const GuestPopup = ({ onClose, onSave, cards, setCards }) => {
       to_place: "",
       r_from_plcae: "",
       r_to_plcae: "",
-      guest_status:0,
-      combine_accommodation_status:0,
-      combine_transport_status:0
+      guest_status: 0,
+      combine_accommodation_status: 0,
+      combine_transport_status: 0,
     };
     const newCards = [...cards];
     newCards.splice(currentIndex + 1, 0, newCard);
@@ -1023,20 +1026,45 @@ const GuestPopup = ({ onClose, onSave, cards, setCards }) => {
   };
 
   const validateFields = () => {
-    let validationErrors = [];
+    let validationErrors = {};
     let isValid = true;
 
     cards.forEach((card, index) => {
       let cardErrors = {};
 
-      if (!card.salutation) cardErrors.salutation = "required";
-      if (!card.first_name) cardErrors.first_name = "required";
-      if (!card.last_name) cardErrors.last_name = "required";
-      if (!card.gender) cardErrors.gender = "required";
-      if (!card.designation) cardErrors.designation = "required";
-      if (!card.organization) cardErrors.organization = "required";
-      if (!card.email) cardErrors.email = "required";
-      if (!card.phone_number) cardErrors.phone_number = "required";
+      if (!card.salutation) cardErrors.salutation = "Salutation is required";
+      if (!card.first_name) cardErrors.first_name = "First Name is required";
+      if (!card.gender) cardErrors.gender = "Gender is required";
+      if (!card.designation) cardErrors.designation = "Designation is required";
+      if (!card.organization)
+        cardErrors.organization = "Organization is required";
+      if (!card.email) cardErrors.email = "Email is required";
+      if (!card.phone_number)
+        cardErrors.phone_number = "Phone Number is required";
+
+      const validSalutations = ["Mr", "Miss", "Dr", "Mrs"];
+      if (card.salutation && !validSalutations.includes(card.salutation)) {
+        cardErrors.salutation = "It is not a Salutation";
+      }
+
+      // Additional validation: Email format
+      if (card.email && !/\S+@\S+\.\S+/.test(card.email)) {
+        cardErrors.email = "Invalid email format";
+      }
+
+      const countryCodeRegex = /^\+\d+$/;
+
+      if (!card.country_code) {
+        cardErrors.country_code = "Country code is required";
+      }
+      if (!countryCodeRegex.test(card.country_code)) {
+        cardErrors.country_code = "It is not a Country Code";
+      }
+
+      // Additional validation: Phone number format
+      if (card.phone_number && !/^\d{10}$/.test(card.phone_number)) {
+        cardErrors.phone_number = "Phone Number must be 10 digits";
+      }
 
       if (Object.keys(cardErrors).length > 0) {
         isValid = false;
@@ -1048,6 +1076,10 @@ const GuestPopup = ({ onClose, onSave, cards, setCards }) => {
     setErrors(validationErrors);
     return isValid;
   };
+
+  useEffect(() => {
+    setInitialFormData([...cards]); // Store initial data
+  }, [cards]);
 
   const handleSubmit = () => {
     if (validateFields()) {
@@ -1061,6 +1093,11 @@ const GuestPopup = ({ onClose, onSave, cards, setCards }) => {
     } else {
       toast.error("Validation failed. Please fill out all required fields.");
     }
+  };
+
+  const handleClose = () => {
+    setCards([...initialFormData]); // Reset data to initial state
+    onClose(); // Close the popup
   };
 
   return (
@@ -1106,7 +1143,7 @@ const GuestPopup = ({ onClose, onSave, cards, setCards }) => {
                   onAdd={handleAdd}
                   onDelete={handleDelete}
                   handleChangeColor={handleSubmit}
-                  handleClose={onClose}
+                  handleClose={handleClose}
                   onInputChange={(field, value) =>
                     handleInputChange(item.id, field, value)
                   } // Corrected
@@ -1136,7 +1173,6 @@ const ParticipantsPopup = ({
   }, []);
 
   const handleCancel = () => {
-    // Reset form data to the initial state when cancel is clicked
     setParticipantsData(initialFormData);
     onClose();
   };
@@ -2239,15 +2275,16 @@ const TransportPopup = ({
                         </Box>
                       )}
                     >
-                      <div className="guestNames">
+                       <div className="guestNames">
                         <img
                           className="guestImage"
-                          src="images/icons_images/bordername.png"
+                          src="img/bordername.png"
                           alt=""
                         />
 
                         <p className="guestname">
-                          {guest.salutation} . {guest.firstName}
+                          {guest.salutation || "Mr"} .{" "}
+                          {guest.first_name || `Guest ${guest.id}`}
                         </p>
                       </div>
                     </StepLabel>
@@ -2450,7 +2487,7 @@ const TransportPopup = ({
 
         <div className="transportsave">
           <button onClick={handleSubmit}>Save</button>
-          {/* <button onClick={onClose}>Cancel</button> */}
+          <button onClick={onClose}>Cancel</button>
         </div>
       </div>
     </div>
@@ -2668,6 +2705,8 @@ const VenueRequirementPopup = ({
   setSelected,
 }) => {
   const [quantityDialogOpen, setQuantityDialogOpen] = useState(false);
+  const [errors, setErrors] = useState({}); // Define errors using useState
+
   const TickIcon = () => (
     <svg
       width="35"
@@ -2747,15 +2786,44 @@ const VenueRequirementPopup = ({
   };
 
   const handleSubmit = () => {
-    setQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      venue_requirement_status: 1, // Update venue_requirement_status to 1 when Confirm is clicked
-    }));
+    let newErrors = {};
+    let allValid = true; // Flag to track if all quantities are valid
+
+    // Validate quantities: should not be less than 1 or greater than 10
+    selectedContent.forEach((itemDbname) => {
+      const quantity = quantities[itemDbname];
+      if (quantity < 1) {
+        newErrors[itemDbname] = "Quantity cannot be less than 1!";
+        allValid = false; // Mark as invalid if any quantity is less than 1
+      } else if (quantity > 10) {
+        newErrors[itemDbname] = "Quantity cannot be greater than 10!";
+        allValid = false; // Mark as invalid if any quantity is greater than 10
+      }
+    });
+
+    // Check if there are any errors
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors); // Set the error messages if validation fails
+      return; // Prevent submission if validation fails
+    }
+
+    // If all quantities are valid, update the status
+    if (allValid) {
+      setQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        venue_requirement_status: 1, // Update venue_requirement_status to 1 if all quantities are valid
+      }));
+    }
+
     onSave(); // Trigger the save action
     onClose(); // Close the popup
   };
 
   const openQuantityDialog = () => {
+    if (selectedContent.length === 0) {
+      toast.error("Please Select atleast one to Save the Requirement!");
+      return;
+    }
     setQuantityDialogOpen(true);
   };
 
@@ -2880,23 +2948,48 @@ const VenueRequirementPopup = ({
                             style={{
                               marginBottom: "10px",
                               display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
+                              flexDirection: "column", // Adjust layout to stack label, input, and error
                             }}
                           >
-                            <Typography variant="body1">{itemName}</Typography>
-                            <TextField
-                              label="Quantity"
-                              type="number"
-                              style={{ marginBottom: "10px", width: "50%" }}
-                              value={quantities[itemDbname]}
-                              onChange={(e) =>
-                                handleQuantityChange(itemDbname, e.target.value)
-                              }
-                              fullWidth
-                              margin="dense"
-                              inputProps={{ min: 1, max: 10 }} // Set min and max range here
-                            />
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginBottom: "10px",
+                              }}
+                            >
+                              <Typography variant="body1">
+                                {itemName}
+                              </Typography>
+                              <TextField
+                                label="Quantity"
+                                type="number"
+                                style={{ width: "50%" }}
+                                value={quantities[itemDbname]}
+                                onChange={(e) =>
+                                  handleQuantityChange(
+                                    itemDbname,
+                                    e.target.value
+                                  )
+                                }
+                                fullWidth
+                                margin="dense"
+                                inputProps={{ min: 1, max: 10 }} // Set min and max range here
+                              />
+                            </div>
+                            {/* Display error message below the input */}
+                            {errors[itemDbname] && (
+                              <span
+                                style={{
+                                  color: "red",
+                                  marginTop: "5px",
+                                  width: "100%",
+                                }}
+                              >
+                                {errors[itemDbname]}
+                              </span>
+                            )}
                           </div>
                         );
                       }
@@ -2917,6 +3010,7 @@ const VenueRequirementPopup = ({
               </Dialog>
             </div>
             <div className="popup-buttons">
+              <ToastContainer />
               <button onClick={openQuantityDialog}>Save</button>
               <button onClick={onClose}>Cancel</button>
             </div>

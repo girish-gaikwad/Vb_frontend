@@ -1291,6 +1291,7 @@ const EventDetailsriser = ({ selectedEvent, user }) => {
             <SpecialRequest
               event_id={event_id}
               SpecialRequestData={SpecialRequestData}
+              user={user}
             />
           </div>
         </div>

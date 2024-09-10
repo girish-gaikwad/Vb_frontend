@@ -149,6 +149,72 @@ const handleVenueRequirementsAssign = async () => {
     );
   }
 };
+const handleCarRequest = async () => {
+  try {
+    const CarRequestAssignResponse = await axios.put(
+      "http://localhost:8000/put/admin-car-request-assign",
+      {
+        status: 2,
+        event_id,
+      }
+    );
+    if (CarRequestAssignResponse.status === 200) {
+      alert("Car Request Assign Status updated successfully");
+    }
+  } catch (error) {
+    console.error(
+      "Error in CarRequestAssignResponse function:",
+      error.message
+    );
+    alert(
+      "An error occurred while saving data. Please check the console for details."
+    );
+  }
+};
+const handleFoodRequest = async () => {
+  try {
+    const FoodRequestAssignResponse = await axios.put(
+      "http://localhost:8000/put/admin-food-request-assign",
+      {
+        status: 2,
+        event_id,
+      }
+    );
+    if (FoodRequestAssignResponse.status === 200) {
+      alert("Food Request Assign Status updated successfully");
+    }
+  } catch (error) {
+    console.error(
+      "Error in FoodRequestAssignResponse function:",
+      error.message
+    );
+    alert(
+      "An error occurred while saving data. Please check the console for details."
+    );
+  }
+};
+const handleRefreshmentRequest = async () => {
+  try {
+    const RefreshmentRequestAssignResponse = await axios.put(
+      "http://localhost:8000/put/admin-refreshment-request-assign",
+      {
+        status: 2,
+        event_id,
+      }
+    );
+    if (RefreshmentRequestAssignResponse.status === 200) {
+      alert("Refreshment Request Assign Status updated successfully");
+    }
+  } catch (error) {
+    console.error(
+      "Error in RefreshmentRequestAssignResponse function:",
+      error.message
+    );
+    alert(
+      "An error occurred while saving data. Please check the console for details."
+    );
+  }
+};
 
 
 
@@ -168,6 +234,15 @@ const handleVenueRequirementsAssign = async () => {
       handleVenueAssign();
     } else if (item === "Venue_Requirements") {
       handleVenueRequirementsAssign();
+    }
+    else if (item === "Car_Request") {
+      handleCarRequest();
+    }
+    else if (item === "Food_Request") {
+      handleFoodRequest();
+    }
+    else if (item === "Refreshment_Request") {
+      handleRefreshmentRequest();
     }
     setIsClicked(true);
     adminasign(item); // Call the passed adminasign function with the item

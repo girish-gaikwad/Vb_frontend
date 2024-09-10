@@ -13,5 +13,6 @@ router.put('/admin-venue-requirement-assign', PostController.AdminVenueRequireme
 router.put('/admin-car-request-assign', PostController.AdminCarRequestAssign);
 router.put('/admin-food-request-assign', PostController.AdminFoodRequestAssign);
 router.put('/admin-refreshment-request-assign', PostController.AdminRefreshmentRequestAssign);
+router.put('/edit-event', PostController.EventEdit);
 
 module.exports = router;
